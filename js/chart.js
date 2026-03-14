@@ -30,30 +30,33 @@ window.ChartManager = {
     },
 
     renderChart(containerId, symbol) {
-        if (typeof TradingView === 'undefined' || !TradingView.MiniWidget) {
-            console.error("TradingView script not loaded yet.");
-            // Retry after a short delay
+        if (typeof TradingView === 'undefined' || typeof TradingView.MiniWidget === 'undefined') {
+            console.warn("TradingView not ready, retrying for", symbol);
             setTimeout(() => this.renderChart(containerId, symbol), 500);
             return;
         }
 
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
         try {
+            // TradingView MiniWidget expects target element to be clear
+            container.innerHTML = "";
+
             new TradingView.MiniWidget({
-                container_id: containerId,
-                symbol: symbol,
-                width: "100%",
-                height: 220,
-                locale: "ja",
-                dateRange: "12M",
-                colorTheme: this.theme,
-                trendLineColor: "rgba(41, 98, 255, 1)",
-                underLineColor: "rgba(41, 98, 255, 0.3)",
-                isTransparent: true,
-                autosize: true,
-                largeChartUrl: ""
+                "container_id": containerId,
+                "symbol": symbol,
+                "width": "100%",
+                "height": "100%", // Fit to the CSS-defined .chart-widget-container
+                "locale": "ja",
+                "dateRange": "12M",
+                "colorTheme": this.theme,
+                "isTransparent": true,
+                "autosize": true,
+                "largeChartUrl": ""
             });
         } catch (e) {
-            console.error("Error rendering chart", symbol, e);
+            console.error("TradingView init error for", symbol, e);
         }
     }
 };
