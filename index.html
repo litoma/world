@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界株価ダッシュボード</title>
+    <meta name="description" content="世界の主要な株価指数、為替、コモディティ等を一覧できるダッシュボード">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-theme="dark">
+    <header>
+        <h1>世界株価ダッシュボード</h1>
+        <button id="theme-toggle" aria-label="テーマ切り替え">🌓</button>
+    </header>
+    
+    <main id="dashboard-container">
+        <!-- Sections will be dynamically inserted here -->
+    </main>
+
+    <!-- Chart Add Modal -->
+    <dialog id="add-chart-modal">
+        <form id="add-chart-form" method="dialog">
+            <h2>チャートを追加</h2>
+            <input type="hidden" id="add-chart-section-id">
+            <div class="form-group">
+                <label for="add-chart-label">表示名</label>
+                <input type="text" id="add-chart-label" required placeholder="例: 日経平均">
+            </div>
+            <div class="form-group">
+                <label for="add-chart-symbol">シンボル</label>
+                <input type="text" id="add-chart-symbol" required placeholder="例: TVC:NI225">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" id="modal-cancel">キャンセル</button>
+                <button type="submit" class="btn-submit">追加</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script src="/js/storage.js"></script>
+    <script src="/js/theme.js"></script>
+    <script src="/js/drag.js"></script>
+    <script src="/js/chart.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
