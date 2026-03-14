@@ -33,7 +33,11 @@ window.ChartManager = {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        // TradingView Mini Symbol Overview uses a specific external embed script, not tv.js
+        // TradingView Mini Symbol Overview uses a specific external embed script.
+        // Dynamically injecting <script> tags into the DOM often fails because the 
+        // script relies on `document.currentScript` to find its insertion point.
+        // Using an iframe with `srcdoc` provides a clean, isolated document environment 
+        // where the script can comfortably execute and render the widget.
         container.innerHTML = "";
 
         const config = {
@@ -50,19 +54,32 @@ window.ChartManager = {
             "largeChartUrl": ""
         };
 
-        const widgetWrapper = document.createElement('div');
-        widgetWrapper.className = 'tradingview-widget-container__widget';
-        widgetWrapper.style.height = "100%";
-        widgetWrapper.style.width = "100%";
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.frameBorder = '0';
+        iframe.scrolling = 'no';
 
-        const scriptInfo = document.createElement('script');
-        scriptInfo.type = "text/javascript";
-        scriptInfo.src = "https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js";
-        scriptInfo.async = true;
-        // The script reads its JSON configuration from innerHTML
-        scriptInfo.text = JSON.stringify(config);
+        const srcDocContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+            </style>
+          </head>
+          <body>
+            <div class="tradingview-widget-container">
+              <div class="tradingview-widget-container__widget"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                ${JSON.stringify(config)}
+              <\/script>
+            </div>
+          </body>
+        </html>
+        `;
 
-        container.appendChild(widgetWrapper);
-        container.appendChild(scriptInfo);
+        iframe.srcdoc = srcDocContent;
+        container.appendChild(iframe);
     }
 };
