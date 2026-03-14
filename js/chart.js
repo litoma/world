@@ -30,33 +30,39 @@ window.ChartManager = {
     },
 
     renderChart(containerId, symbol) {
-        if (typeof TradingView === 'undefined' || typeof TradingView.MiniWidget === 'undefined') {
-            console.warn("TradingView not ready, retrying for", symbol);
-            setTimeout(() => this.renderChart(containerId, symbol), 500);
-            return;
-        }
-
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        try {
-            // TradingView MiniWidget expects target element to be clear
-            container.innerHTML = "";
+        // TradingView Mini Symbol Overview uses a specific external embed script, not tv.js
+        container.innerHTML = "";
 
-            new TradingView.MiniWidget({
-                "container_id": containerId,
-                "symbol": symbol,
-                "width": "100%",
-                "height": "100%", // Fit to the CSS-defined .chart-widget-container
-                "locale": "ja",
-                "dateRange": "12M",
-                "colorTheme": this.theme,
-                "isTransparent": true,
-                "autosize": true,
-                "largeChartUrl": ""
-            });
-        } catch (e) {
-            console.error("TradingView init error for", symbol, e);
-        }
+        const config = {
+            "symbol": symbol,
+            "width": "100%",
+            "height": "100%",
+            "locale": "ja",
+            "dateRange": "12M",
+            "colorTheme": this.theme,
+            "trendLineColor": "rgba(41, 98, 255, 1)",
+            "underLineColor": "rgba(41, 98, 255, 0.3)",
+            "isTransparent": true,
+            "autosize": true,
+            "largeChartUrl": ""
+        };
+
+        const widgetWrapper = document.createElement('div');
+        widgetWrapper.className = 'tradingview-widget-container__widget';
+        widgetWrapper.style.height = "100%";
+        widgetWrapper.style.width = "100%";
+
+        const scriptInfo = document.createElement('script');
+        scriptInfo.type = "text/javascript";
+        scriptInfo.src = "https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js";
+        scriptInfo.async = true;
+        // The script reads its JSON configuration from innerHTML
+        scriptInfo.text = JSON.stringify(config);
+
+        container.appendChild(widgetWrapper);
+        container.appendChild(scriptInfo);
     }
 };
