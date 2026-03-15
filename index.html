@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,22 @@
     <meta name="description" content="世界の主要な株価指数、為替、コモディティ等を一覧できるダッシュボード">
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body data-theme="dark">
     <header>
         <h1>世界株価ダッシュボード</h1>
-        <button id="theme-toggle" aria-label="テーマ切り替え">🌓</button>
+        <div class="header-controls">
+            <button id="theme-toggle" aria-label="テーマ切り替え">🌓</button>
+            <div id="auth-container">
+                <button id="login-button" style="display: none;">ログイン</button>
+                <div id="user-profile" style="display: none;">
+                    <span id="user-email"></span>
+                    <button id="logout-button">ログアウト</button>
+                </div>
+            </div>
+        </div>
     </header>
-    
+
     <main id="dashboard-container">
         <!-- Sections will be dynamically inserted here -->
     </main>
@@ -37,11 +48,13 @@
         </form>
     </dialog>
 
+    <script type="module" src="/js/auth.js"></script>
     <script src="https://s3.tradingview.com/tv.js"></script>
-    <script src="/js/storage.js"></script>
+    <script type="module" src="/js/storage.js"></script>
     <script src="/js/theme.js"></script>
     <script src="/js/drag.js"></script>
     <script src="/js/chart.js"></script>
-    <script src="/js/main.js"></script>
+    <script type="module" src="/js/main.js"></script>
 </body>
+
 </html>

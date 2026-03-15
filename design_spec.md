@@ -7,6 +7,8 @@
 | プロジェクト名 | 世界株価ダッシュボード |
 | ホスティング | Cloudflare Pages（無料プラン） |
 | チャート | TradingView 埋め込みウィジェット（無料） |
+| 認証 | Authelia OIDC SSO + Firebase Auth |
+| DB | Firebase Firestore（ユーザーレイアウト保存） |
 | 開発環境 | Ubuntu 24.04 |
 | 構成 | 静的HTML / CSS / Vanilla JS（フレームワーク不使用） |
 
@@ -16,25 +18,39 @@
 
 ### 2.1 チャート管理
 
-- 分類（セクション）単位でチャートを追加・削除できる
-- チャート追加時はシンボル・表示名を入力して登録
-- 削除は各チャートカードに設置した削除ボタンで実行
-- 削除前に確認ダイアログを表示
+- カテゴリー単位でチャートを追加・削除できる
+- チャート追加時はシンボル入力欄でサジェスト候補を表示（TradingViewシンボル検索API利用）
+- 削除は各チャートカードの削除ボタンで実行、削除前に確認ダイアログを表示
 
 ### 2.2 並び順変更
 
 - ドラッグ＆ドロップによるチャートカードの並び替え
-- セクション内のみ移動可（セクション間移動は対象外）
+- カテゴリー内のみ移動可（カテゴリー間移動は対象外）
 - タッチデバイスにも対応（Touch Events API）
 
 ### 2.3 レイアウト保存
 
-- チャート構成・並び順・表示設定を `localStorage` に保存
+- **未ログイン時**: `localStorage` に保存（ブラウザローカルのみ）
+- **ログイン時**: Firebase Firestore にユーザーIDひもづきで保存・同期
 - 保存タイミング：追加・削除・並び替え・設定変更の直後に自動保存
 - 次回アクセス時に保存済み設定を自動ロード
 - 設定リセットボタン（デフォルト構成に戻す）を設置
 
-### 2.4 レスポンシブレイアウト
+### 2.4 ユーザー認証
+
+- Authelia（`https://auth.yusukesakai.com`）をOIDCプロバイダーとして使用
+- Firebase AuthのカスタムOIDCプロバイダーとして登録
+- Autheliaに登録済みのユーザーのみログイン可能
+- ログイン状態はヘッダーに表示（アバター・ログアウトボタン）
+
+### 2.5 シンボルサジェスト
+
+- チャート追加モーダルのシンボル入力欄で候補をサジェスト表示
+- TradingViewの非公式シンボル検索エンドポイントを使用
+- 入力から300ms後（debounce）にAPIを呼び出し
+- **⚠️ 非公式エンドポイントのため将来的に使用不可になるリスクあり**
+
+### 2.6 レスポンシブレイアウト
 
 | ブレークポイント | カラム数 |
 |----------------|---------|
@@ -45,114 +61,190 @@
 - CSS Grid を使用
 - チャートウィジェットの高さはビューポートに応じて自動調整
 
-### 2.5 ダークモード
+### 2.7 ダークモード
 
 - OS設定（`prefers-color-scheme`）を初期値として自動適用
 - ヘッダーにトグルボタンを設置し手動切替可能
 - 選択状態は `localStorage` に保存
-- TradingViewウィジェットも `theme: "dark" / "light"` で連動
+- TradingViewウィジェットも `theme: "dark" / "light"` で連動（再初期化）
 
 ---
 
-## 3. データ設計
+## 3. 認証設計
 
-### 3.1 localStorage スキーマ
+### 3.1 認証フロー
+
+```
+ユーザー（ブラウザ）
+  → Firebase Auth（OIDCプロバイダー: Authelia）
+    → Authelia (https://auth.yusukesakai.com) でSSOログイン
+      → 認証成功 → IDトークン発行
+        → Firebase Auth がトークンを検証
+          → Firestoreアクセス許可
+```
+
+### 3.2 Authelia側設定（OIDC クライアント登録）
+
+```yaml
+# Authelia configuration.yml に追加
+identity_providers:
+  oidc:
+    clients:
+      - client_id: kabuka-dashboard
+        client_secret: {生成したシークレット}
+        redirect_uris:
+          - https://world.yusukesakai.com/__/auth/handler
+        scopes:
+          - openid
+          - profile
+          - email
+        grant_types:
+          - authorization_code
+        response_types:
+          - code
+```
+
+### 3.3 Firebase Auth側設定
+
+- Firebase Console → Authentication → Sign-in method
+- 「新しいプロバイダーを追加」→「OpenID Connect」を選択
+- 以下を設定：
+  - プロバイダーID: `oidc.authelia`
+  - クライアントID: `kabuka-dashboard`
+  - 発行者URL: `https://auth.yusukesakai.com`
+
+### 3.4 Firestoreセキュリティルール
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/layout/{document=**} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+---
+
+## 4. データ設計
+
+### 4.1 Firestoreスキーマ
+
+```
+users/
+  {uid}/
+    layout/
+      config    ← ドキュメント（レイアウトJSON全体を1件保存）
+```
+
+```json
+{
+  "theme": "dark",
+  "updatedAt": "2025-01-01T00:00:00Z",
+  "sections": [ ... ]
+}
+```
+
+### 4.2 localStorageスキーマ（未ログイン時 / キャッシュ）
 
 ```json
 {
   "theme": "dark",
   "sections": [
     {
-      "id": "jp-stock",
-      "label": "🇯🇵 日本株式",
+      "id": "indices",
+      "label": "Indices",
       "charts": [
-        { "id": "chart-001", "symbol": "TVC:NI225",  "label": "日経平均" },
-        { "id": "chart-002", "symbol": "CME:NKD1!",  "label": "日経時間外" }
+        { "id": "chart-001", "symbol": "NIKKEI", "label": "日経平均" },
+        { "id": "chart-002", "symbol": "DJ30",        "label": "ダウ平均" },
+        { "id": "chart-003", "symbol": "NASDAQ", "label": "ナスダック" },
+        { "id": "chart-004", "symbol": "SPX", "label": "S&P500" }
       ]
     },
     {
-      "id": "us-stock",
-      "label": "🇺🇸 米国株式",
+      "id": "futures",
+      "label": "Futures",
       "charts": [
-        { "id": "chart-003", "symbol": "DJ:DJI",       "label": "ダウ平均" },
-        { "id": "chart-004", "symbol": "CME:YM1!",     "label": "サンデーダウ" },
-        { "id": "chart-005", "symbol": "NASDAQ:IXIC",  "label": "ナスダック" },
-        { "id": "chart-006", "symbol": "SP:SPX",       "label": "S&P500" }
+        { "id": "chart-005", "symbol": "NK2251!",   "label": "日経時間外" },
+        { "id": "chart-006", "symbol": "DJ30",    "label": "サンデーダウ" },
+        { "id": "chart-007", "symbol": "TVC:GOLD",    "label": "ゴールド" },
+        { "id": "chart-008", "symbol": "COMEX:GC1!",  "label": "ゴールドサンデー" },
+        { "id": "chart-009", "symbol": "TVC:USOIL",   "label": "WTI原油先物" },
+        { "id": "chart-010", "symbol": "NYMEX:CL1!",  "label": "WTI原油先物サンデー" }
       ]
     },
     {
-      "id": "bond",
-      "label": "📊 債券・恐怖指数",
+      "id": "forex",
+      "label": "Forex",
       "charts": [
-        { "id": "chart-007", "symbol": "CBOE:VIX",    "label": "恐怖指数(VIX)" },
-        { "id": "chart-008", "symbol": "TVC:JP10Y",   "label": "日本国債10年" },
-        { "id": "chart-009", "symbol": "TVC:US10Y",   "label": "米国国債10年" }
-      ]
-    },
-    {
-      "id": "commodity",
-      "label": "🥇 コモディティ",
-      "charts": [
-        { "id": "chart-010", "symbol": "TVC:GOLD",    "label": "ゴールド" },
-        { "id": "chart-011", "symbol": "COMEX:GC1!",  "label": "ゴールドサンデー" },
-        { "id": "chart-012", "symbol": "TVC:USOIL",   "label": "WTI原油先物" },
-        { "id": "chart-013", "symbol": "NYMEX:CL1!",  "label": "WTI原油先物サンデー" }
-      ]
-    },
-    {
-      "id": "fx",
-      "label": "💱 為替",
-      "charts": [
-        { "id": "chart-014", "symbol": "FX:USDJPY",  "label": "ドル円" },
-        { "id": "chart-015", "symbol": "FX:EURUSD",  "label": "ユーロドル" }
+        { "id": "chart-011", "symbol": "FX:USDJPY",  "label": "ドル円" },
+        { "id": "chart-012", "symbol": "FX:EURUSD",  "label": "ユーロドル" }
       ]
     },
     {
       "id": "crypto",
-      "label": "🪙 暗号資産",
+      "label": "Crypto",
       "charts": [
-        { "id": "chart-016", "symbol": "COINBASE:BTCUSD", "label": "ビットコイン(BTC)" },
-        { "id": "chart-017", "symbol": "COINBASE:ETHUSD", "label": "イーサリアム(ETH)" },
-        { "id": "chart-018", "symbol": "COINBASE:SOLUSD", "label": "ソラナ(SOL)" }
+        { "id": "chart-013", "symbol": "COINBASE:BTCUSD", "label": "BTC" },
+        { "id": "chart-014", "symbol": "COINBASE:ETHUSD", "label": "ETH" },
+        { "id": "chart-015", "symbol": "COINBASE:SOLUSD", "label": "SOL" }
       ]
     },
     {
-      "id": "jp-individual",
-      "label": "🏢 日本個別株",
+      "id": "stocks",
+      "label": "Stocks",
       "charts": []
+    },
+    {
+      "id": "bonds",
+      "label": "Bonds",
+      "charts": [
+        { "id": "chart-016", "symbol": "JP10Y",  "label": "日本国債10年" },
+        { "id": "chart-017", "symbol": "US10Y",  "label": "米国国債10年" }
+      ]
+    },
+    {
+      "id": "economy",
+      "label": "Economy",
+      "charts": [
+        { "id": "chart-018", "symbol": "VIX", "label": "恐怖指数(VIX)" }
+      ]
     }
   ]
 }
 ```
 
-### 3.2 ID生成ルール
+### 4.3 ID生成ルール
 
-- セクションID：固定文字列（スラッグ形式）
-- チャートID：`chart-` + タイムスタンプ（`Date.now()`）
+- カテゴリーID: 固定文字列（スラッグ形式）
+- チャートID: `chart-` + タイムスタンプ（`Date.now()`）
 
 ---
 
-## 4. 画面設計
+## 5. 画面設計
 
-### 4.1 ページ全体構成
+### 5.1 ページ全体構成
 
 ```
-┌─────────────────────────────────────┐
-│  ヘッダー                            │
-│  [サイト名]    [ダークモードトグル]   │
-├─────────────────────────────────────┤
-│  セクション: 🇯🇵 日本株式  [+ 追加]  │
-│  ┌────────┐ ┌────────┐ ┌────────┐  │
-│  │チャート│ │チャート│ │チャート│  │
-│  │  [×]  │ │  [×]  │ │  [×]  │  │
-│  └────────┘ └────────┘ └────────┘  │
-├─────────────────────────────────────┤
-│  セクション: 🇺🇸 米国株式  [+ 追加]  │
-│  ...                                │
-└─────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│  ヘッダー                                    │
+│  [サイト名]  [ダークモードトグル] [ログイン]  │
+├─────────────────────────────────────────────┤
+│  カテゴリー: Indices            [+ 追加]      │
+│  ┌────────┐ ┌────────┐ ┌────────┐           │
+│  │チャート│ │チャート│ │チャート│           │
+│  │  [×]  │ │  [×]  │ │  [×]  │           │
+│  └────────┘ └────────┘ └────────┘           │
+├─────────────────────────────────────────────┤
+│  カテゴリー: Futures            [+ 追加]      │
+│  ...                                        │
+└─────────────────────────────────────────────┘
 ```
 
-### 4.2 チャートカード
+### 5.2 チャートカード
 
 ```
 ┌──────────────────────────────┐
@@ -163,25 +255,29 @@
 └──────────────────────────────┘
 ```
 
-### 4.3 チャート追加モーダル
+### 5.3 チャート追加モーダル（サジェスト付き）
 
 ```
-┌──────────────────────────────┐
-│ チャートを追加           [×] │
-│                              │
-│ 表示名: [__________________] │
-│ シンボル: [________________] │
-│     例) TVC:NI225            │
-│                              │
-│          [キャンセル] [追加]  │
-└──────────────────────────────┘
+┌────────────────────────────────────┐
+│ チャートを追加                 [×] │
+│                                    │
+│ 表示名: [______________________]   │
+│ シンボル: [____________________]   │
+│ ┌──────────────────────────────┐   │
+│ │ FOREXCOM:JPN225  日経平均    │   │  ← サジェスト候補
+│ │ CME:NKD1!        日経先物    │   │
+│ │ ...                          │   │
+│ └──────────────────────────────┘   │
+│                                    │
+│              [キャンセル] [追加]    │
+└────────────────────────────────────┘
 ```
 
 ---
 
-## 5. 技術設計
+## 6. 技術設計
 
-### 5.1 ファイル構成
+### 6.1 ファイル構成
 
 ```
 /
@@ -190,26 +286,38 @@
 │   └── style.css
 ├── js/
 │   ├── main.js          # エントリポイント、初期化
-│   ├── storage.js       # localStorageの読み書き
+│   ├── auth.js          # Firebase Auth / Authelia OIDC処理
+│   ├── storage.js       # localStorage / Firestore 読み書き
 │   ├── chart.js         # TradingViewウィジェット生成
+│   ├── suggest.js       # シンボルサジェスト（TradingView非公式API）
 │   ├── drag.js          # ドラッグ＆ドロップ処理
 │   └── theme.js         # ダークモード切替
 └── _redirects           # Cloudflare Pages用（SPA対応）
 ```
 
-### 5.2 TradingViewウィジェット仕様
+### 6.2 Firebase SDK読み込み（CDN）
+
+```html
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-app.js";
+  import { getAuth, signInWithPopup, OAuthProvider } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-firestore.js";
+</script>
+```
+
+### 6.3 TradingViewウィジェット仕様
 
 使用ウィジェット：**Mini Symbol Overview**
 
 ```javascript
 new TradingView.MiniWidget({
   container_id: "tv-chart-{id}",
-  symbol: "TVC:NI225",
+  symbol: "FOREXCOM:JPN225",
   width: "100%",
   height: 220,
   locale: "ja",
   dateRange: "12M",
-  colorTheme: "dark",      // or "light"
+  colorTheme: "dark",       // or "light"
   trendLineColor: "rgba(41, 98, 255, 1)",
   underLineColor: "rgba(41, 98, 255, 0.3)",
   isTransparent: true,
@@ -218,14 +326,32 @@ new TradingView.MiniWidget({
 });
 ```
 
-### 5.3 ドラッグ＆ドロップ
+> ⚠️ テーマ切替時はiframeの制約によりウィジェットのDOM要素を再生成する必要あり
+
+### 6.4 シンボルサジェストAPI（非公式）
+
+```javascript
+// 入力値に対してdebounce 300ms後に呼び出す
+const res = await fetch(
+  `https://symbol-search.tradingview.com/symbol_search/v3/`
+  + `?text=${encodeURIComponent(query)}`
+  + `&lang=ja`
+  + `&domain=production`
+);
+const data = await res.json();
+// data.symbols[] に候補リスト
+```
+
+> ⚠️ 非公式エンドポイントのため予告なく変更・廃止の可能性あり
+
+### 6.5 ドラッグ＆ドロップ
 
 - **PC**: HTML5 Drag and Drop API
 - **スマホ**: `touchstart` / `touchmove` / `touchend` イベント
-- ライブラリは使用しない（Vanilla JSで実装）
+- ライブラリ不使用（Vanilla JSで実装）
 - ドラッグ中は対象カードに `.dragging` クラスを付与し視覚フィードバック
 
-### 5.4 ダークモード CSS変数
+### 6.6 ダークモード CSS変数
 
 ```css
 :root {
@@ -251,7 +377,7 @@ new TradingView.MiniWidget({
 
 ---
 
-## 6. 非機能要件
+## 7. 非機能要件
 
 | 項目 | 方針 |
 |------|------|
@@ -262,7 +388,7 @@ new TradingView.MiniWidget({
 
 ---
 
-## 7. デプロイ手順
+## 8. デプロイ手順
 
 ```bash
 # 1. Gitリポジトリ初期化
@@ -282,22 +408,25 @@ git push origin main
 
 ---
 
-## 8. 開発フェーズ
+## 9. 開発フェーズ
 
 | フェーズ | 内容 |
 |---------|------|
 | Phase 1 | 静的HTML構築・TradingViewウィジェット埋め込み確認 |
 | Phase 2 | ダークモード・レスポンシブCSS実装 |
 | Phase 3 | localStorage保存・ロード実装 |
-| Phase 4 | チャート追加・削除機能実装 |
+| Phase 4 | チャート追加・削除・サジェスト機能実装 |
 | Phase 5 | ドラッグ＆ドロップ実装 |
-| Phase 6 | Cloudflare Pagesデプロイ・動作確認 |
+| Phase 6 | Firebase Auth + Authelia OIDC連携実装 |
+| Phase 7 | Firestore保存・ロード実装 |
+| Phase 8 | Cloudflare Pagesデプロイ・動作確認 |
 
 ---
 
-## 9. 既知の制約・注意事項
+## 10. 既知の制約・注意事項
 
-- TradingViewウィジェットはiframe埋め込みのため、親ページからの直接操作不可
-- テーマ切替時はウィジェットを再初期化する必要あり（DOMを再生成）
-- `CME:NKD1!` 等の先物シンボルは市場時間外にデータが止まる場合あり
-- TradingViewの無料プランではウィジェット下部にTradingViewロゴが常時表示される
+- TradingViewウィジェットはiframe埋め込みのため、テーマ切替時はDOM再生成が必要
+- シンボルサジェストAPIは非公式のため、予告なく使用不可になるリスクあり
+- 先物シンボルは市場時間外にデータが止まる場合あり
+- TradingView無料プランではウィジェット下部にTradingViewロゴが常時表示される
+- FirebaseのAPIキー等は `firebaseConfig` オブジェクトとしてHTMLに記載（公開前提の設定値のため問題なし、Firestoreセキュリティルールで保護）

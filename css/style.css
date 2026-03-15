@@ -48,6 +48,56 @@ header h1 {
     cursor: pointer;
 }
 
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+#auth-container {
+    display: flex;
+    align-items: center;
+}
+
+#user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#login-button {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#login-button:hover {
+    opacity: 0.9;
+}
+
+#logout-button {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+#logout-button:hover {
+    background-color: var(--border);
+}
+
+#user-email {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
 .dashboard-section {
     padding: 1.5rem 2rem;
 }

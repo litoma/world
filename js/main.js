@@ -1,11 +1,34 @@
+import { initAuth, login, logout } from '/js/auth.js';
+
 window.App = {
     init() {
-        this.renderAll();
+        const loginBtn = document.getElementById('login-button');
+        const logoutBtn = document.getElementById('logout-button');
+
+        if (loginBtn) loginBtn.addEventListener('click', login);
+        if (logoutBtn) logoutBtn.addEventListener('click', logout);
+
+        initAuth(async (user) => {
+            if (user) {
+                document.getElementById('login-button').style.display = 'none';
+                document.getElementById('user-profile').style.display = 'flex';
+                document.getElementById('user-email').textContent = user.email || user.displayName || 'User';
+            } else {
+                document.getElementById('login-button').style.display = 'block';
+                document.getElementById('user-profile').style.display = 'none';
+            }
+
+            const data = await window.StorageManager.load();
+            window.ChartManager.theme = data.theme || 'dark';
+
+            this.renderAll(data);
+        });
+
         this.setupEventListeners();
     },
 
-    renderAll() {
-        const data = window.StorageManager.load();
+    renderAll(data) {
+        if (!data) data = window.StorageManager.getData();
         const container = document.getElementById('dashboard-container');
         container.innerHTML = ''; // Clear for re-render
 
@@ -139,8 +162,8 @@ window.App = {
         }
     },
 
-    addChart(sectionId, label, symbol) {
-        const data = window.StorageManager.load();
+    async addChart(sectionId, label, symbol) {
+        const data = window.StorageManager.getData();
         const section = data.sections.find(s => s.id === sectionId);
         if (section) {
             const newChart = {
@@ -149,15 +172,15 @@ window.App = {
                 symbol: symbol
             };
             section.charts.push(newChart);
-            window.StorageManager.save(data);
+            await window.StorageManager.save(data);
 
             // Re-render all to reflect changes (and observer will pick up new elements)
-            this.renderAll();
+            this.renderAll(data);
         }
     },
 
-    deleteChart(chartId) {
-        const data = window.StorageManager.load();
+    async deleteChart(chartId) {
+        const data = window.StorageManager.getData();
         let modified = false;
 
         data.sections.forEach(section => {
@@ -169,14 +192,13 @@ window.App = {
         });
 
         if (modified) {
-            window.StorageManager.save(data);
-            this.renderAll();
+            await window.StorageManager.save(data);
+            this.renderAll(data);
         }
     }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    const data = window.StorageManager.load();
-    window.ChartManager.theme = data.theme || 'dark';
+    // Initial load happens within App.init() (auth callback)
     window.App.init();
 });

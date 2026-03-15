@@ -18,11 +18,11 @@ window.DragManager = {
             }
         });
 
-        container.addEventListener('dragend', (e) => {
+        container.addEventListener('dragend', async (e) => {
             if (e.target.classList && e.target.classList.contains('chart-card')) {
                 e.target.classList.remove('dragging');
                 draggedElement = null;
-                this.saveOrder();
+                await this.saveOrder();
             }
         });
 
@@ -94,12 +94,12 @@ window.DragManager = {
             }
         }, { passive: false });
 
-        container.addEventListener('touchend', (e) => {
+        container.addEventListener('touchend', async (e) => {
             if (isDragging && draggedElement) {
                 draggedElement.classList.remove('dragging');
                 draggedElement = null;
                 isDragging = false;
-                this.saveOrder();
+                await this.saveOrder();
             }
         });
     },
@@ -118,8 +118,8 @@ window.DragManager = {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     },
 
-    saveOrder() {
-        const data = window.StorageManager.load();
+    async saveOrder() {
+        const data = window.StorageManager.getData();
 
         data.sections.forEach(section => {
             const gridId = `grid-${section.id}`;
@@ -142,10 +142,12 @@ window.DragManager = {
             }
         });
 
-        window.StorageManager.save(data);
+        await window.StorageManager.save(data);
     }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // window.DragManager.init() will be called internally from main.js if needed or kept here
+    // Currently init doesn't rely on loaded data, it just attaches events.
     window.DragManager.init();
 });

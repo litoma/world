@@ -1,3 +1,5 @@
+import { db, doc, getDoc, setDoc, currentUser } from '/js/auth.js';
+
 window.StorageManager = {
     DEFAULT_DATA: {
         theme: "dark",
@@ -64,20 +66,59 @@ window.StorageManager = {
         ]
     },
 
-    load() {
-        const data = localStorage.getItem('world_stock_dashboard');
-        if (data) {
+    currentData: null,
+
+    async load() {
+        let savedTheme = localStorage.getItem('world_stock_theme');
+
+        if (currentUser) {
             try {
-                return JSON.parse(data);
-            } catch (e) {
-                console.error("Storage parse error", e);
-                return this.DEFAULT_DATA;
+                const docRef = doc(db, 'users', currentUser.uid, 'layout', 'config');
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    this.currentData = docSnap.data();
+
+                    // Respect local theme setting over cloud sync if available
+                    if (savedTheme) {
+                        this.currentData.theme = savedTheme;
+                    }
+
+                    return this.currentData;
+                }
+            } catch (error) {
+                console.error("Firestore load error", error);
             }
         }
-        return this.DEFAULT_DATA;
+
+        // For unauthenticated users or fresh accounts, return default layout
+        this.currentData = JSON.parse(JSON.stringify(this.DEFAULT_DATA));
+        if (savedTheme) {
+            this.currentData.theme = savedTheme;
+        }
+
+        return this.currentData;
     },
 
-    save(data) {
-        localStorage.setItem('world_stock_dashboard', JSON.stringify(data));
+    async save(data) {
+        this.currentData = data;
+
+        // Only save theme to localStorage so unauthenticated users always get default layouts
+        localStorage.setItem('world_stock_theme', data.theme);
+
+        // Clean up legacy localStorage item if it exists
+        localStorage.removeItem('world_stock_dashboard');
+
+        if (currentUser) {
+            try {
+                const docRef = doc(db, 'users', currentUser.uid, 'layout', 'config');
+                await setDoc(docRef, { ...data, updatedAt: new Date().toISOString() });
+            } catch (error) {
+                console.error("Firestore save error", error);
+            }
+        }
+    },
+
+    getData() {
+        return this.currentData || this.DEFAULT_DATA;
     }
 };

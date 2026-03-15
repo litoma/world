@@ -6,12 +6,12 @@ window.ThemeManager = {
         // Initial application is handled by main.js through window.ChartManager.theme which is read from StorageManager.
         // We just attach the event listener here.
 
-        toggleBtn.addEventListener('click', () => {
-            const data = window.StorageManager.load();
+        toggleBtn.addEventListener('click', async () => {
+            const data = window.StorageManager.getData();
             const newTheme = data.theme === 'dark' ? 'light' : 'dark';
 
             data.theme = newTheme;
-            window.StorageManager.save(data);
+            await window.StorageManager.save(data);
 
             this.applyThemeToDOM(newTheme);
             this.rebuildAllCharts(newTheme);
@@ -36,8 +36,7 @@ window.ThemeManager = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // apply initial DOM state
-    const data = window.StorageManager.load();
-    document.body.setAttribute('data-theme', data.theme || 'dark');
+    // apply initial DOM state after auth is checked in main.js
+    // window.ThemeManager.init() should be called from main.js or after load
     window.ThemeManager.init();
 });
