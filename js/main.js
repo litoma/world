@@ -206,7 +206,64 @@ window.App = {
         const labelInput = document.getElementById('add-chart-label');
         if (!symbolInput || !suggestionList) return;
 
-        let debounceTimer = null;
+        // Curated symbol list for quick search
+        const SYMBOLS = [
+            // Indices
+            { symbol: 'TVC:NI225', description: '日経平均' },
+            { symbol: 'DJ:DJI', description: 'ダウ平均' },
+            { symbol: 'NASDAQ:IXIC', description: 'ナスダック' },
+            { symbol: 'SP:SPX', description: 'S&P500' },
+            { symbol: 'CBOE:VIX', description: '恐怖指数 VIX' },
+            { symbol: 'TVC:HSI', description: 'ハンセン指数' },
+            { symbol: 'TVC:SHCOMP', description: '上海総合指数' },
+            { symbol: 'TVC:FTSE', description: 'FTSE100' },
+            { symbol: 'TVC:DAX', description: 'DAX' },
+            // Futures
+            { symbol: 'CME:NKD1!', description: '日経225先物' },
+            { symbol: 'CME:YM1!', description: 'ダウ先物' },
+            { symbol: 'CME:ES1!', description: 'S&P500先物' },
+            { symbol: 'CME:NQ1!', description: 'ナスダック先物' },
+            // Commodities
+            { symbol: 'TVC:GOLD', description: 'ゴールド' },
+            { symbol: 'COMEX:GC1!', description: 'ゴールド先物' },
+            { symbol: 'TVC:SILVER', description: 'シルバー' },
+            { symbol: 'TVC:USOIL', description: 'WTI原油' },
+            { symbol: 'NYMEX:CL1!', description: 'WTI原油先物' },
+            // Bonds
+            { symbol: 'TVC:JP10Y', description: '日本国債10年' },
+            { symbol: 'TVC:US10Y', description: '米国国債10年' },
+            { symbol: 'TVC:US02Y', description: '米国国債2年' },
+            // Forex
+            { symbol: 'FX:USDJPY', description: 'ドル円' },
+            { symbol: 'FX:EURUSD', description: 'ユーロドル' },
+            { symbol: 'FX:GBPUSD', description: 'ポンドドル' },
+            { symbol: 'FX:EURJPY', description: 'ユーロ円' },
+            { symbol: 'FX:AUDUSD', description: '豪ドル米ドル' },
+            // Crypto
+            { symbol: 'COINBASE:BTCUSD', description: 'ビットコイン' },
+            { symbol: 'COINBASE:ETHUSD', description: 'イーサリアム' },
+            { symbol: 'COINBASE:SOLUSD', description: 'ソラナ' },
+            { symbol: 'COINBASE:XRPUSD', description: 'リップル' },
+            // US Stocks
+            { symbol: 'NASDAQ:AAPL', description: 'Apple' },
+            { symbol: 'NASDAQ:MSFT', description: 'Microsoft' },
+            { symbol: 'NASDAQ:GOOGL', description: 'Alphabet (Google)' },
+            { symbol: 'NASDAQ:AMZN', description: 'Amazon' },
+            { symbol: 'NASDAQ:META', description: 'Meta' },
+            { symbol: 'NYSE:NVDA', description: 'NVIDIA' },
+            { symbol: 'NYSE:TSM', description: 'TSMC' },
+            // JP Stocks
+            { symbol: 'TSE:7203', description: 'トヨタ自動車' },
+            { symbol: 'TSE:6758', description: 'ソニー' },
+            { symbol: 'TSE:9984', description: 'ソフトバンクグループ' },
+            { symbol: 'TSE:6861', description: 'キーエンス' },
+            { symbol: 'TSE:8306', description: '三菱UFJ' },
+            { symbol: 'TSE:9432', description: 'NTT' },
+            { symbol: 'TSE:4568', description: '第一三共' },
+            { symbol: 'TSE:6098', description: 'リクルート' },
+            { symbol: 'TSE:2914', description: 'JT' },
+        ];
+
         let selectedIndex = -1;
 
         const hideSuggestions = () => {
@@ -222,9 +279,9 @@ window.App = {
             items.forEach((item) => {
                 const li = document.createElement('li');
                 li.className = 'suggestion-item';
-                li.innerHTML = `<strong>${item.symbol}</strong> <span>${item.description}</span>`;
+                li.innerHTML = `<strong>${item.symbol}</strong><span>${item.description}</span>`;
                 li.addEventListener('mousedown', (e) => {
-                    e.preventDefault(); // Prevent blur
+                    e.preventDefault();
                     symbolInput.value = item.symbol;
                     if (!labelInput.value) {
                         labelInput.value = item.description;
@@ -237,29 +294,16 @@ window.App = {
         };
 
         symbolInput.addEventListener('input', () => {
-            const query = symbolInput.value.trim();
-            clearTimeout(debounceTimer);
-            if (query.length < 2) { hideSuggestions(); return; }
+            const query = symbolInput.value.trim().toUpperCase();
+            if (query.length < 1) { hideSuggestions(); return; }
 
-            debounceTimer = setTimeout(async () => {
-                try {
-                    const res = await fetch(
-                        `https://symbol-search.tradingview.com/symbol_search/?text=${encodeURIComponent(query)}&type=&exchange=&lang=ja&domain=production`
-                    );
-                    const json = await res.json();
-                    // json is an array of { symbol, description, exchange, type, ... }
-                    const items = (json || []).slice(0, 8).map(r => ({
-                        symbol: r.exchange ? `${r.exchange}:${r.symbol}` : r.symbol,
-                        description: r.description || r.full_name || ''
-                    }));
-                    showSuggestions(items);
-                } catch (e) {
-                    hideSuggestions();
-                }
-            }, 300);
+            const matched = SYMBOLS.filter(s =>
+                s.symbol.toUpperCase().includes(query) ||
+                s.description.includes(symbolInput.value.trim())
+            ).slice(0, 8);
+            showSuggestions(matched);
         });
 
-        // Keyboard navigation
         symbolInput.addEventListener('keydown', (e) => {
             const items = suggestionList.querySelectorAll('.suggestion-item');
             if (!items.length) return;
@@ -282,7 +326,6 @@ window.App = {
         });
 
         symbolInput.addEventListener('blur', () => {
-            // Delay so mousedown on suggestion fires first
             setTimeout(hideSuggestions, 150);
         });
     }
