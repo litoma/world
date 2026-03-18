@@ -39,7 +39,12 @@
             </div>
             <div class="form-group">
                 <label for="add-chart-symbol">シンボル</label>
-                <input type="text" id="add-chart-symbol" required placeholder="例: TVC:NI225">
+                <div class="symbol-input-wrapper">
+                    <input type="text" id="add-chart-symbol" required placeholder="例: AAPL, TVC:NI225"
+                        autocomplete="off">
+                    <ul id="symbol-suggestions" class="symbol-suggestions" style="display:none;"></ul>
+                </div>
+                <small class="form-hint">銘柄名またはシンボルを入力して検索してください</small>
             </div>
             <div class="form-actions">
                 <button type="button" class="btn-cancel" id="modal-cancel">キャンセル</button>

@@ -145,6 +145,9 @@ window.App = {
             });
         }
 
+        // Symbol suggestion
+        this.setupSymbolSuggestion();
+
         // Submit form
         if (form) {
             form.addEventListener('submit', (e) => {
@@ -195,6 +198,93 @@ window.App = {
             await window.StorageManager.save(data);
             this.renderAll(data);
         }
+    },
+
+    setupSymbolSuggestion() {
+        const symbolInput = document.getElementById('add-chart-symbol');
+        const suggestionList = document.getElementById('symbol-suggestions');
+        const labelInput = document.getElementById('add-chart-label');
+        if (!symbolInput || !suggestionList) return;
+
+        let debounceTimer = null;
+        let selectedIndex = -1;
+
+        const hideSuggestions = () => {
+            suggestionList.style.display = 'none';
+            suggestionList.innerHTML = '';
+            selectedIndex = -1;
+        };
+
+        const showSuggestions = (items) => {
+            if (!items.length) { hideSuggestions(); return; }
+            suggestionList.innerHTML = '';
+            selectedIndex = -1;
+            items.forEach((item) => {
+                const li = document.createElement('li');
+                li.className = 'suggestion-item';
+                li.innerHTML = `<strong>${item.symbol}</strong> <span>${item.description}</span>`;
+                li.addEventListener('mousedown', (e) => {
+                    e.preventDefault(); // Prevent blur
+                    symbolInput.value = item.symbol;
+                    if (!labelInput.value) {
+                        labelInput.value = item.description;
+                    }
+                    hideSuggestions();
+                });
+                suggestionList.appendChild(li);
+            });
+            suggestionList.style.display = 'block';
+        };
+
+        symbolInput.addEventListener('input', () => {
+            const query = symbolInput.value.trim();
+            clearTimeout(debounceTimer);
+            if (query.length < 2) { hideSuggestions(); return; }
+
+            debounceTimer = setTimeout(async () => {
+                try {
+                    const res = await fetch(
+                        `https://symbol-search.tradingview.com/symbol_search/?text=${encodeURIComponent(query)}&type=&exchange=&lang=ja&domain=production`
+                    );
+                    const json = await res.json();
+                    // json is an array of { symbol, description, exchange, type, ... }
+                    const items = (json || []).slice(0, 8).map(r => ({
+                        symbol: r.exchange ? `${r.exchange}:${r.symbol}` : r.symbol,
+                        description: r.description || r.full_name || ''
+                    }));
+                    showSuggestions(items);
+                } catch (e) {
+                    hideSuggestions();
+                }
+            }, 300);
+        });
+
+        // Keyboard navigation
+        symbolInput.addEventListener('keydown', (e) => {
+            const items = suggestionList.querySelectorAll('.suggestion-item');
+            if (!items.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, 0);
+            } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                e.preventDefault();
+                items[selectedIndex].dispatchEvent(new MouseEvent('mousedown'));
+                return;
+            } else if (e.key === 'Escape') {
+                hideSuggestions();
+                return;
+            }
+            items.forEach((el, i) => el.classList.toggle('active', i === selectedIndex));
+        });
+
+        symbolInput.addEventListener('blur', () => {
+            // Delay so mousedown on suggestion fires first
+            setTimeout(hideSuggestions, 150);
+        });
     }
 };
 
