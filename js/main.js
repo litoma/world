@@ -267,13 +267,36 @@ window.App = {
             suggestionList.style.display = 'block';
         };
 
+        const isMatchSection = (s, sectionId) => {
+            const ex = s.symbol.split(':')[0];
+            const t = s.type || '';
+            const desc = s.description.toUpperCase();
+
+            switch (sectionId) {
+                case 'indices':
+                    return t === 'index' || ex === 'INDEX' || ex === 'SP' || ex === 'DJ' || desc.includes('INDEX') || s.symbol.includes('VIX');
+                case 'futures':
+                    return t === 'futures' || ex === 'CME' || ex === 'COMEX' || ex === 'NYMEX' || ex === 'CBOT' || desc.includes('FUTURES');
+                case 'forex':
+                    return t === 'forex' || ex === 'FX' || ex === 'FOREX';
+                case 'crypto':
+                    return t === 'crypto' || ex === 'COINBASE' || ex === 'BINANCE' || ex === 'CRYPTO' || ex === 'BITSTAMP';
+                case 'stocks':
+                    return t === 'stock' || t === 'dr' || t === 'fund' || ['NASDAQ', 'NYSE', 'TSE'].includes(ex);
+                default:
+                    return true;
+            }
+        };
+
         symbolInput.addEventListener('input', () => {
             const query = symbolInput.value.trim().toUpperCase();
             if (query.length < 1) { hideSuggestions(); return; }
 
+            const sectionId = document.getElementById('add-chart-section-id').value;
+
             const matched = allSymbols.filter(s =>
-                s.symbol.toUpperCase().includes(query) ||
-                s.description.includes(symbolInput.value.trim())
+                isMatchSection(s, sectionId) &&
+                (s.symbol.toUpperCase().includes(query) || s.description.includes(symbolInput.value.trim()))
             ).slice(0, 8);
             showSuggestions(matched);
         });
