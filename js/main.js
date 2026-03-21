@@ -177,8 +177,12 @@ window.App = {
             section.charts.push(newChart);
             await window.StorageManager.save(data);
 
-            // Re-render all to reflect changes (and observer will pick up new elements)
-            this.renderAll(data);
+            // Append directly to DOM instead of re-rendering everything
+            const gridEl = document.getElementById(`grid-${sectionId}`);
+            if (gridEl) {
+                const cardEl = this.createChartCard(newChart);
+                gridEl.appendChild(cardEl);
+            }
         }
     },
 
@@ -196,7 +200,12 @@ window.App = {
 
         if (modified) {
             await window.StorageManager.save(data);
-            this.renderAll(data);
+
+            // Remove specific chart from DOM instead of re-rendering everything
+            const cardEl = document.querySelector(`.chart-card[data-id="${chartId}"]`);
+            if (cardEl) {
+                cardEl.remove();
+            }
         }
     },
 
