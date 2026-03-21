@@ -227,8 +227,8 @@ window.App = {
 
         let allSymbols = [...FALLBACK_SYMBOLS];
 
-        // Try to load the full TVC symbol list asynchronously
-        fetch('/js/tvc-symbols.json')
+        // Try to load the full symbol list asynchronously
+        fetch('/js/all-symbols.json')
             .then(r => r.json())
             .then(tvcList => {
                 // Merge: TVC symbols first, then keep non-TVC from fallback
