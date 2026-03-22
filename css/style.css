@@ -107,8 +107,10 @@ header h1 {
 }
 
 .dashboard-section {
-    flex: 1 1 300px; /* Base width 300px, flex-grow to fill */
-    min-width: 0; /* Prevent flex blowout */
+    flex: 1 1 300px;
+    /* Base width 300px, flex-grow to fill */
+    min-width: 0;
+    /* Prevent flex blowout */
     background-color: transparent;
 }
 
@@ -162,6 +164,28 @@ header h1 {
     flex-grow: 1;
     font-size: 0.95rem;
     font-weight: 500;
+}
+
+.chart-range-select {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-size: 0.8rem;
+    margin-right: 8px;
+    cursor: pointer;
+    outline: none;
+}
+
+.chart-range-select:hover {
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.chart-range-select option {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
 }
 
 .btn-delete-chart {

@@ -1,66 +1,65 @@
 window.ChartManager = {
-    observer: null,
-    theme: 'dark', // default
+  observer: null,
+  theme: 'dark', // default
 
-    init() {
-        this.observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const containerId = entry.target.id;
-                    const symbol = entry.target.dataset.symbol;
+  init() {
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const containerId = entry.target.id;
+          const symbol = entry.target.dataset.symbol;
 
-                    if (containerId && symbol && !entry.target.hasAttribute('data-loaded')) {
-                        this.renderChart(containerId, symbol);
-                        entry.target.setAttribute('data-loaded', 'true');
-                        this.observer.unobserve(entry.target);
-                    }
-                }
-            });
-        }, { rootMargin: '100px 0px' });
-    },
+          if (containerId && symbol && !entry.target.hasAttribute('data-loaded')) {
+            this.renderChart(containerId, symbol);
+            entry.target.setAttribute('data-loaded', 'true');
+            this.observer.unobserve(entry.target);
+          }
+        }
+      });
+    }, { rootMargin: '100px 0px' });
+  },
 
-    observe(element) {
-        if (!this.observer) this.init();
-        this.observer.observe(element);
-    },
+  observe(element) {
+    if (!this.observer) this.init();
+    this.observer.observe(element);
+  },
 
-    setTheme(newTheme) {
-        this.theme = newTheme;
-        // Re-rendering will be handled globally when theme changes
-    },
+  setTheme(newTheme) {
+    this.theme = newTheme;
+    // Re-rendering will be handled globally when theme changes
+  },
 
-    renderChart(containerId, symbol) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
+  renderChart(containerId, symbol, dateRange = "1D") {
+    const container = document.getElementById(containerId);
+    if (!container) return;
 
-        // TradingView Mini Symbol Overview uses a specific external embed script.
-        // Dynamically injecting <script> tags into the DOM often fails because the 
-        // script relies on `document.currentScript` to find its insertion point.
-        // Using an iframe with `srcdoc` provides a clean, isolated document environment 
-        // where the script can comfortably execute and render the widget.
-        container.innerHTML = "";
+    // TradingView Mini Symbol Overview uses a specific external embed script.
+    // Dynamically injecting <script> tags into the DOM often fails because the 
+    // script relies on `document.currentScript` to find its insertion point.
+    // Using an iframe with `srcdoc` provides a clean, isolated document environment 
+    // where the script can comfortably execute and render the widget.
+    container.innerHTML = "";
 
-        const config = {
-            "symbol": symbol,
-            "width": "100%",
-            "height": "100%",
-            "locale": "ja",
-            "dateRange": "12M",
-            "colorTheme": this.theme,
-            "trendLineColor": "rgba(41, 98, 255, 1)",
-            "underLineColor": "rgba(41, 98, 255, 0.3)",
-            "isTransparent": true,
-            "autosize": true,
-            "largeChartUrl": ""
-        };
+    const config = {
+      "symbol": symbol,
+      "width": "100%",
+      "height": "100%",
+      "locale": "ja",
+      "dateRange": dateRange,
+      "colorTheme": this.theme,
+      "isTransparent": true,
+      "autosize": true,
+      "largeChartUrl": "",
+      "chartType": "baseline"
+    };
 
-        const iframe = document.createElement('iframe');
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.frameBorder = '0';
-        iframe.scrolling = 'no';
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.frameBorder = '0';
+    iframe.scrolling = 'no';
 
-        const srcDocContent = `
+    const srcDocContent = `
         <!DOCTYPE html>
         <html>
           <head>
@@ -79,7 +78,7 @@ window.ChartManager = {
         </html>
         `;
 
-        iframe.srcdoc = srcDocContent;
-        container.appendChild(iframe);
-    }
+    iframe.srcdoc = srcDocContent;
+    container.appendChild(iframe);
+  }
 };

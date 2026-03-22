@@ -88,6 +88,30 @@ window.App = {
         cardTitle.className = 'chart-title';
         cardTitle.textContent = chart.label;
 
+        const rangeSelect = document.createElement('select');
+        rangeSelect.className = 'chart-range-select';
+        const options = [
+            { value: '1H', text: '1時間' },
+            { value: '1D', text: '1日' },
+            { value: '1W', text: '1週間' },
+            { value: '1M', text: '1ヶ月' },
+            { value: '12M', text: '1年間' }
+        ];
+        options.forEach(opt => {
+            const el = document.createElement('option');
+            el.value = opt.value;
+            el.textContent = opt.text;
+            if ((chart.dateRange || '1D') === opt.value) el.selected = true;
+            rangeSelect.appendChild(el);
+        });
+
+        rangeSelect.addEventListener('change', async (e) => {
+            chart.dateRange = e.target.value;
+            await window.StorageManager.save(window.StorageManager.currentData);
+            const containerId = `tv-${chart.id}`;
+            window.ChartManager.renderChart(containerId, chart.symbol, chart.dateRange);
+        });
+
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'btn-delete-chart';
         deleteBtn.textContent = '×';
@@ -96,6 +120,7 @@ window.App = {
 
         cardHeader.appendChild(dragHandle);
         cardHeader.appendChild(cardTitle);
+        cardHeader.appendChild(rangeSelect);
         cardHeader.appendChild(deleteBtn);
 
         const chartContainer = document.createElement('div');
@@ -103,6 +128,7 @@ window.App = {
         const tvContainerId = `tv-${chart.id}`;
         chartContainer.id = tvContainerId;
         chartContainer.dataset.symbol = chart.symbol;
+        chartContainer.dataset.range = chart.dateRange || '1D';
 
         cardEl.appendChild(cardHeader);
         cardEl.appendChild(chartContainer);
