@@ -156533,5 +156533,15 @@
     "symbol": "VANTAGE:DJ30",
     "description": "ダウ平均",
     "type": "index"
+  },
+  {
+    "symbol": "NK2251!",
+    "description": "日経時間外",
+    "type": "futures"
+  },
+  {
+    "symbol": "TVC:SILVER",
+    "description": "シルバー",
+    "type": "futures"
   }
 ]

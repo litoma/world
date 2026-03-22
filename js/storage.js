@@ -18,12 +18,10 @@ window.StorageManager = {
                 id: "futures",
                 label: "Futures",
                 charts: [
-                    { id: "chart-005", symbol: "CME:NKD1!", label: "日経時間外" },
-                    { id: "chart-006", symbol: "CME:YM1!", label: "サンデーダウ" },
+                    { id: "chart-005", symbol: "NK2251!", label: "日経時間外" },
                     { id: "chart-007", symbol: "TVC:GOLD", label: "ゴールド" },
-                    { id: "chart-008", symbol: "COMEX:GC1!", label: "ゴールドサンデー" },
-                    { id: "chart-009", symbol: "TVC:USOIL", label: "WTI原油先物" },
-                    { id: "chart-010", symbol: "NYMEX:CL1!", label: "WTI原油先物サンデー" }
+                    { id: "chart-new-silver", symbol: "TVC:SILVER", label: "シルバー" },
+                    { id: "chart-009", symbol: "TVC:USOIL", label: "WTI原油先物" }
                 ]
             },
             {
