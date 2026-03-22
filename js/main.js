@@ -217,10 +217,10 @@ window.App = {
 
         // Curated fallback list (used until tvc-symbols.json loads)
         const FALLBACK_SYMBOLS = [
-            { symbol: 'TVC:NI225', description: '日経平均' },
-            { symbol: 'DJ:DJI', description: 'ダウ平均' },
-            { symbol: 'NASDAQ:IXIC', description: 'ナスダック' },
-            { symbol: 'SP:SPX', description: 'S&P500' },
+            { symbol: 'VANTAGE:JP225', description: '日経平均' },
+            { symbol: 'VANTAGE:US30', description: 'ダウ平均' },
+            { symbol: 'VANTAGE:NAS100', description: 'ナスダック' },
+            { symbol: 'VANTAGE:SP500', description: 'S&P500' },
             { symbol: 'TVC:GOLD', description: 'ゴールド' },
             { symbol: 'TVC:USOIL', description: 'WTI原油' },
             { symbol: 'FX:USDJPY', description: 'ドル円' },
@@ -229,9 +229,16 @@ window.App = {
             { symbol: 'COINBASE:ETHUSD', description: 'イーサリアム' },
             { symbol: 'NASDAQ:AAPL', description: 'Apple' },
             { symbol: 'NASDAQ:MSFT', description: 'Microsoft' },
-            { symbol: 'NYSE:NVDA', description: 'NVIDIA' },
+            { symbol: 'NASDAQ:GOOGL', description: 'Alphabet' },
+            { symbol: 'NASDAQ:AMZN', description: 'Amazon' },
+            { symbol: 'NASDAQ:NVDA', description: 'NVIDIA' },
+            { symbol: 'NASDAQ:META', description: 'Meta' },
+            { symbol: 'NASDAQ:TSLA', description: 'Tesla' },
             { symbol: 'TSE:7203', description: 'トヨタ自動車' },
-            { symbol: 'TSE:6758', description: 'ソニー' },
+            { symbol: 'TSE:8306', description: '三菱UFJ' },
+            { symbol: 'TSE:9984', description: 'ソフトバンクG' },
+            { symbol: 'TSE:8001', description: '伊藤忠商事' },
+            { symbol: 'TSE:6758', description: 'ソニーG' },
         ];
 
         let allSymbols = [...FALLBACK_SYMBOLS];
@@ -283,15 +290,17 @@ window.App = {
 
             switch (sectionId) {
                 case 'indices':
-                    return t === 'index' || ex === 'INDEX' || ex === 'SP' || ex === 'DJ' || desc.includes('INDEX') || s.symbol.includes('VIX');
+                    return t === 'index' || ex === 'INDEX' || ex === 'SP' || ex === 'DJ' || ex === 'VANTAGE' || desc.includes('INDEX') || s.symbol.includes('VIX');
                 case 'futures':
                     return t === 'futures' || ex === 'CME' || ex === 'COMEX' || ex === 'NYMEX' || ex === 'CBOT' || desc.includes('FUTURES');
                 case 'forex':
                     return t === 'forex' || ex === 'FX' || ex === 'FOREX';
                 case 'crypto':
                     return t === 'crypto' || ex === 'COINBASE' || ex === 'BINANCE' || ex === 'CRYPTO' || ex === 'BITSTAMP';
-                case 'stocks':
-                    return t === 'stock' || t === 'dr' || t === 'fund' || ['NASDAQ', 'NYSE', 'TSE'].includes(ex);
+                case 'us-stocks':
+                    return (t === 'stock' || t === 'dr' || t === 'fund' || t === '') && ['NASDAQ', 'NYSE', 'AMEX'].includes(ex);
+                case 'jp-stocks':
+                    return (t === 'stock' || t === 'dr' || t === 'fund' || t === '') && ['TSE', 'FSE', 'NSE'].includes(ex);
                 default:
                     return true;
             }

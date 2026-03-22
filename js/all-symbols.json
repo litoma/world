@@ -155313,5 +155313,1215 @@
     "symbol": "TVC:ZXY",
     "description": "New Zealand Dollar Currency Index",
     "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:XAUUSD",
+    "description": "Gold US Dollar",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:BTCUSD",
+    "description": "Bitcoin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:SP500",
+    "description": "S&P Index Cash CFD (USD)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:NAS100",
+    "description": "NAS100 Cash",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:ETHUSD",
+    "description": "Ethereum",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:EURUSD",
+    "description": "Euro vs US Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:DJ30",
+    "description": "Dow Jones Index Cash CFD (USD)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:USOUSD",
+    "description": "WTI Crude Oil Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:USDJPY",
+    "description": "US Dollar vs Japanese Yen",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:SP500FT",
+    "description": "SP500 Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:XAGUSD",
+    "description": "Silver US Dollar",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:NAS100FT",
+    "description": "NAS100 Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:GBPUSD",
+    "description": "Great Britain Pound vs US Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GER40",
+    "description": "GER40 Cash",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:NIKKEI225",
+    "description": "Japan Index Cash CFD (JPY)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:BTCETH",
+    "description": "Bitcoin vs Ethereum",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:CLOIL",
+    "description": "Crude Oil Future CFD (USD)",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:GBPJPY",
+    "description": "Great Britain Pound vs Japanese Yen",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:UKOUSD",
+    "description": "Brent Crude Oil Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:DJ30FT",
+    "description": "DJ30 Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:BTCXAU",
+    "description": "Bitcoin vs Gold",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:AUDUSD",
+    "description": "Australian Dollar vs US Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDX",
+    "description": "US Dollar Index CFD (USD)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:NG",
+    "description": "Natural Gas",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:SOLUSD",
+    "description": "Solana",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:VIX",
+    "description": "Volatility Index",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:EURJPY",
+    "description": "Euro vs Japanese Yen",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDCAD",
+    "description": "US Dollar vs Canadian Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:XRPUSD",
+    "description": "Ripple",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:HK50",
+    "description": "Hang Seng Index Cash CFD (HKD)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:HK50FT",
+    "description": "HK50 Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:USDCHF",
+    "description": "US Dollar vs Swiss Franc",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:AUDJPY",
+    "description": "Australian Dollar vs Japanese Yen",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:UK100",
+    "description": "UK 100 Cash",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:COPPER",
+    "description": "Copper",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:NZDUSD",
+    "description": "New Zealand Dollar vs US Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDINR",
+    "description": "US Dollar vs Indian Rupee",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:BTCJPY",
+    "description": "BitCoin vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:EURAUD",
+    "description": "Euro vs Australian Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GER40FT",
+    "description": "GER40 Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:EURGBP",
+    "description": "Euro vs Great Britain Pound",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GBPAUD",
+    "description": "Great Britain Pound vs Australian Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GBPCAD",
+    "description": "Great Britain Pound vs Canadian Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:ETHJPY",
+    "description": "Ethereum vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:AUDCAD",
+    "description": "Australian Dollar vs Canadian Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GBPCHF",
+    "description": "Great Britain Pound vs Swiss Franc",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GAS",
+    "description": "Gasoline",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:CADJPY",
+    "description": "Canadian Dollar vs Japanese Yen",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:EURCAD",
+    "description": "Euro vs Canadian Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GASOIL",
+    "description": "Low Sulphur Gasoil - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:AGG",
+    "description": "iShares Core U.S. Aggregate Bond ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:AUDNZD",
+    "description": "Australian Dollar vs New Zealand Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:ARKG",
+    "description": "ARK Genomic Revolution",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:ARKQ",
+    "description": "ARK Autonomous Tch & Rob",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:ARKK",
+    "description": "ARK Innovation",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:ARKW",
+    "description": "ARK Next Gen Int ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:ARKB",
+    "description": "ARK 21Shares Bitcoin ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:AUDCHF",
+    "description": "Australian Dollar vs Swiss Franc",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:ALGUSD",
+    "description": "Algorand",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:ADAUSD",
+    "description": "Cardano",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:AUDCNH",
+    "description": "AU Dollar vs Chinese Yuan",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:AVAUSD",
+    "description": "Avalanche",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:ADAJPY",
+    "description": "Cardano vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:ATMUSD",
+    "description": "Cosmos",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:AUDSGD",
+    "description": "Australian Dollar vs Singapore Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:BNO",
+    "description": "United States Brent Oil Fund LP",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BND",
+    "description": "Vanguard Total Bond Market ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BNBUSD",
+    "description": "Binance Coin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:BNDX",
+    "description": "Vanguard Total International Bond ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BITO",
+    "description": "ProShares Bitcoin Strategy ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BTCO",
+    "description": "Invesco Galaxy Bitcoin ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BKCH",
+    "description": "Global X Blockchain ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BITB",
+    "description": "Bitwise Bitcoin ETP Trust",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BITQ",
+    "description": "Bitwise Crypto Industry Innovators ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BLCN",
+    "description": "Siren ETF Trust Siren Nasdaq NexGen Economy ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BTOG",
+    "description": "Bit Origin Ltd",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BLOK",
+    "description": "Amplify Transformational Data Sharing ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:BVSPX",
+    "description": "Bovespa Cash CFD (BRL)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:BTCLTC",
+    "description": "Bitcoin vs Litecoin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:BTCBCH",
+    "description": "Bitcoin vs Bitcoin Cash",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:BTCEUR",
+    "description": "BitCoin vs Euro",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:BCHUSD",
+    "description": "Bitcoin Cash",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:BCHJPY",
+    "description": "Bitcoin Cash vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:BATUSD",
+    "description": "Basic Attention Token",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:BERAUSD",
+    "description": "Berachain",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:COR",
+    "description": "Cencora Inc.",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:COCOA",
+    "description": "US Cocoa - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:CHFJPY",
+    "description": "Swiss Franc vs Japanese Yen",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:COFFEE",
+    "description": "Coffee Arabica - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:CADCHF",
+    "description": "Canadian Dollar vs Swiss Franc",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:COTTON",
+    "description": "Cotton - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:CROUSD",
+    "description": "Crypto.com coin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:CHFSGD",
+    "description": "Swiss Franc vs Singapore Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:CRVUSD",
+    "description": "Curve",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:CHINA50",
+    "description": "China A50 Index Cash CFD (USD)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:CHINA50FT",
+    "description": "CHINA50 Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:DBC",
+    "description": "Invesco DB Commodity Index Tracking Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:DBA",
+    "description": "Invesco DB Agriculture Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:DOGUSD",
+    "description": "Dogecoin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:DOTUSD",
+    "description": "Polkadot",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:EU50",
+    "description": "EUSTX50 Cash",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:EEM",
+    "description": "iShares MSCI Emerging Markets Index Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:EFA",
+    "description": "iShares MSCI EAFE Index Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:EURCHF",
+    "description": "Euro vs Swiss Franc",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:ES35",
+    "description": "ES35 Index Cash",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:ESGV",
+    "description": "Vanguard ESG US Stock (BATS:ESGV)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:EURNZD",
+    "description": "Euro vs New Zealand Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:ETHXAU",
+    "description": "Ethereum vs Gold",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:EUB5Y",
+    "description": "Euro - BOBL Futures",
+    "type": "bond"
+  },
+  {
+    "symbol": "VANTAGE:EUB2Y",
+    "description": "Euro - Schatz Futures",
+    "type": "bond"
+  },
+  {
+    "symbol": "VANTAGE:ETHEUR",
+    "description": "Ethereum vs Euro",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:EURPLN",
+    "description": "Euro vs Polish Zloty",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:EUB10Y",
+    "description": "Euro - Bund Futures",
+    "type": "bond"
+  },
+  {
+    "symbol": "VANTAGE:ETHBCH",
+    "description": "Ethereum vs Bitcoin Cash",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:EURNOK",
+    "description": "Euro vs Norwegian Krone",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:ETCUSD",
+    "description": "Ethereum Classic",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:ETHLTC",
+    "description": "Ethereum vs Litecoin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:EUB30Y",
+    "description": "Euro - BUXL Futures",
+    "type": "bond"
+  },
+  {
+    "symbol": "VANTAGE:EURTRY",
+    "description": "Euro vs Turkish Lira",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:EURSGD",
+    "description": "Euro vs Singapore Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:EURCZK",
+    "description": "Euro vs Czech Koruna",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:EURSEK",
+    "description": "Euro vs Swedish Krona",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:EURDKK",
+    "description": "Euro vs Danish Krone",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:EURHUF",
+    "description": "Euro vs Hungarian Forint",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:EURIBOR3M",
+    "description": "EURIBOR Futures",
+    "type": "bond"
+  },
+  {
+    "symbol": "VANTAGE:FRA40",
+    "description": "France 40 Index",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:FXI",
+    "description": "iShares China Large-Cap ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:FDN",
+    "description": "First Trust Dow Jones Internet Index Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:FAS",
+    "description": "Direxoin Daily Financial Bull 3x Shares",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:FAZ",
+    "description": "Direxoin Daily Financial Bear 3x Shares",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:FILUSD",
+    "description": "Filecoin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:FRA40FT",
+    "description": "FRA40 Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:GLD",
+    "description": "SPDR Gold (ARCX:GLD)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:GDX",
+    "description": "VanEck:Gold Miners (ARCX:GDX)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:GSG",
+    "description": "iShares S&P GSCI Commodity-Indexed Trust",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:GBPNZD",
+    "description": "Great Britain Pound vs New Zealand Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GDXJ",
+    "description": "VanEck:Jr Gold Miners (ARCX:GDXJ)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:GBTC",
+    "description": "Grayscale Bitcoin Trust",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:GOAU",
+    "description": "US Global GG&P Mtl Mine (ARCX:GOAU)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:GRID",
+    "description": "First Trust Nasdaq Clean Edge Smart GRID Infrastructure Index",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:GOEX",
+    "description": "Glbl X Gold Explrs ETF (ARCX:GOEX)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:GBPSGD",
+    "description": "Great Britain Pound vs Singapore Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:GRTUSD",
+    "description": "The Graph",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:HKTECH",
+    "description": "Hang Seng TECH Index CASH CFD (HKD)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:HYPEUSD",
+    "description": "Hyperliquid coin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:HBARUSD",
+    "description": "Hedera",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:IWM",
+    "description": "iShares Russell 2000 Index Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:IYW",
+    "description": "iShares U.S. Technology ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:IBIT",
+    "description": "iShares Bitcoin Trust",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:ICLN",
+    "description": "iShares Global Clean Energy ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:IOTUSD",
+    "description": "IOTA",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:INCUSD",
+    "description": "1inch",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:JNUG",
+    "description": "Direxion:Jr Mnr Bull 2X (ARCX:JNUG)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:JPN225FT",
+    "description": "Japan Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:LTCUSD",
+    "description": "Litecoin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:LNKUSD",
+    "description": "Chainlink",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:LTCJPY",
+    "description": "Litecoin vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:LRCUSD",
+    "description": "Loopring",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:LONGGILT",
+    "description": "UK Long Gilt Futures",
+    "type": "bond"
+  },
+  {
+    "symbol": "VANTAGE:NZDJPY",
+    "description": "New Zealand Dollar vs Japanese Yen",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:NUGT",
+    "description": "Direxion:Gold M Id Bl 2X (ARCX:NUGT)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:NZDCAD",
+    "description": "New Zealand Dollar vs Canadian Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:NZDCHF",
+    "description": "New Zealand Dollar vs Swiss Franc",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:NERUSD",
+    "description": "NEAR protocol",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:NEOUSD",
+    "description": "Neo",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:NZDSGD",
+    "description": "New Zealand Dollar vs Singapore Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:OJ",
+    "description": "Orange Juice - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:OIH",
+    "description": "VanEck Oil Services ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:OKBUSD",
+    "description": "OKX coin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:ONEUSD",
+    "description": "Harmony",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:ONDOUSD",
+    "description": "Ondo",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:QQQ",
+    "description": "Invesco QQQ Trust",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:QCLN",
+    "description": "First Trust NASDAQ Clean Edge Green Energy Index Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:RING",
+    "description": "iShares:MSCI Gl GMiners (XNAS:RING)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:SPY",
+    "description": "SPDR S&P 500 ETF Trust",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:SDS",
+    "description": "ProShares UltraShort S&P 500 ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:SA40",
+    "description": "South Africa 40 - CASH",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:SGDJ",
+    "description": "Sprott Junior Gold Mnrs (ARCX:SGDJ)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:SLVP",
+    "description": "iShares:MSCI Gl SMetal (BATS:SLVP)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:SPYX",
+    "description": "SPDR S&P 500 Foss Fl Res (ARCX:SPYX)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:SGDM",
+    "description": "Sprott Gold Miners (ARCX:SGDM)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:SUGAR",
+    "description": "Sugar Raw - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:SGP20",
+    "description": "Singapore 20 Index Cash CFD",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:SPI200",
+    "description": "S&P/ASX 200 Index Cash CFD (AUD)",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:SHBUSD",
+    "description": "10000SHIBA",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:SOLJPY",
+    "description": "Solana vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:SKYUSD",
+    "description": "Sky Protocol",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:SANUSD",
+    "description": "The Sandbox",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:SUSUSD",
+    "description": "Sushi",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:SGDJPY",
+    "description": "Singapore Dollar vs Japanese Yen",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:SOYBEAN",
+    "description": "Soybean - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:TAN",
+    "description": "Invesco Solar ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:TRXUSD",
+    "description": "TRON",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:TWINDEX",
+    "description": "Taiwan RIC Index Cash CFD",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:TRUMPUSD",
+    "description": "TrumpCoin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:USO",
+    "description": "United States Oil Fund LP",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:USL",
+    "description": "United States 12 Month Oil Fund LP",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:USDKRW",
+    "description": "US Dollar vs South Korean won",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:US2000",
+    "description": "US SMALL CAP 2000 - CASH",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:USDCNH",
+    "description": "US Dollar vs Chinese Yuan",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:UK100FT",
+    "description": "UK100 Future",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:USDTHB",
+    "description": "United States Dollar vs Thai Baht",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDIDR",
+    "description": "US Dollar vs Indonesian Rupiah",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDTWD",
+    "description": "US Dollar vs Taiwan Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDZAR",
+    "description": "US Dollar vs South African Rand",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDSEK",
+    "description": "US Dollar vs Swedish Krona",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDILS",
+    "description": "US dollar vs Israeli Shekel",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDCOP",
+    "description": "US Dollar vs Colombia Peso",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDSGD",
+    "description": "US Dollar vs Singapore Dollar",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDCLP",
+    "description": "US Dollar vs Chile Peso",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDMXN",
+    "description": "US Dollar vs Mexican Peso",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDHUF",
+    "description": "US Dollar vs Hungarian Forint",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:UNIUSD",
+    "description": "Uniswap",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:USDBRL",
+    "description": "US Dollar vs Brazilian",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDTRY",
+    "description": "US Dollar vs Turkish Lira",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDNOK",
+    "description": "US Dollar vs Norwegian Krone",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDPLN",
+    "description": "US Dollar vs Polish Zloty",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDDKK",
+    "description": "US Dollar vs Danish Krone",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:USDCZK",
+    "description": "US Dollar vs Czech Koruna",
+    "type": "forex"
+  },
+  {
+    "symbol": "VANTAGE:UKOUSDFT",
+    "description": "Brent Crude Oil Future",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:USDTJPY",
+    "description": "Tether vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:USNOTE10Y",
+    "description": "US 10 YR T-Note Futures Decimalised",
+    "type": "bond"
+  },
+  {
+    "symbol": "VANTAGE:VGT",
+    "description": "Vanguard Information Technology ETF",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:VSGX",
+    "description": "Vanguard ESG Intl Stock (BATS:VSGX)",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:WHEAT",
+    "description": "US Wheat (SRW) - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:WIFUSD",
+    "description": "Dogwifhat",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:WLDUSD",
+    "description": "World coin",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:WLFIUSD",
+    "description": "World Liberty Financial",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:XLK",
+    "description": "Technology Select Sector SPDR Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:XOP",
+    "description": "SPDR S&P Oil and Gas Exploration and Production",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:XLF",
+    "description": "The Financial Select Sector SPDR Fund",
+    "type": "fund"
+  },
+  {
+    "symbol": "VANTAGE:XPTUSD",
+    "description": "Platinum vs US Dollar",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:XAUEUR",
+    "description": "Gold / Euro",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:XAUAUD",
+    "description": "Gold vs Australian Dollar",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:XRPJPY",
+    "description": "Ripple vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:XPDUSD",
+    "description": "Palladium - Cash",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:XAUJPY",
+    "description": "Gold vs Japanese Yen",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:XAGAUD",
+    "description": "Silver vs Australian Dollar",
+    "type": "commodity"
+  },
+  {
+    "symbol": "VANTAGE:XLMUSD",
+    "description": "Stellar Lumens",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:XLMJPY",
+    "description": "Stellar Lumens vs Japanese Yen",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:XTZUSD",
+    "description": "Tezos",
+    "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:ZECUSD",
+    "description": "Zcash",
+    "type": "spot"
   }
 ]

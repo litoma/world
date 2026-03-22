@@ -8,10 +8,10 @@ window.StorageManager = {
                 id: "indices",
                 label: "Indices",
                 charts: [
-                    { id: "chart-001", symbol: "TVC:NI225", label: "日経平均" },
-                    { id: "chart-002", symbol: "DJ:DJI", label: "ダウ平均" },
-                    { id: "chart-003", symbol: "NASDAQ:IXIC", label: "ナスダック" },
-                    { id: "chart-004", symbol: "SP:SPX", label: "S&P500" }
+                    { id: "chart-001", symbol: "VANTAGE:JP225", label: "日経平均" },
+                    { id: "chart-002", symbol: "VANTAGE:US30", label: "ダウ平均" },
+                    { id: "chart-003", symbol: "VANTAGE:NAS100", label: "ナスダック" },
+                    { id: "chart-004", symbol: "VANTAGE:SP500", label: "S&P500" }
                 ]
             },
             {
@@ -44,9 +44,28 @@ window.StorageManager = {
                 ]
             },
             {
-                id: "stocks",
-                label: "Stocks",
-                charts: []
+                id: "us-stocks",
+                label: "Stocks (US)",
+                charts: [
+                    { id: "chart-us-001", symbol: "NASDAQ:AAPL", label: "Apple" },
+                    { id: "chart-us-002", symbol: "NASDAQ:MSFT", label: "Microsoft" },
+                    { id: "chart-us-003", symbol: "NASDAQ:GOOGL", label: "Alphabet" },
+                    { id: "chart-us-004", symbol: "NASDAQ:AMZN", label: "Amazon" },
+                    { id: "chart-us-005", symbol: "NASDAQ:NVDA", label: "NVIDIA" },
+                    { id: "chart-us-006", symbol: "NASDAQ:META", label: "Meta" },
+                    { id: "chart-us-007", symbol: "NASDAQ:TSLA", label: "Tesla" }
+                ]
+            },
+            {
+                id: "jp-stocks",
+                label: "Stocks (JP)",
+                charts: [
+                    { id: "chart-jp-001", symbol: "TSE:7203", label: "トヨタ自動車" },
+                    { id: "chart-jp-002", symbol: "TSE:8306", label: "三菱UFJ" },
+                    { id: "chart-jp-003", symbol: "TSE:9984", label: "ソフトバンクG" },
+                    { id: "chart-jp-004", symbol: "TSE:8001", label: "伊藤忠商事" },
+                    { id: "chart-jp-005", symbol: "TSE:6758", label: "ソニーG" }
+                ]
             }
         ]
     },
@@ -62,6 +81,21 @@ window.StorageManager = {
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     this.currentData = docSnap.data();
+
+                    // Migration for existing layouts containing old 'stocks'
+                    const stocksIndex = this.currentData.sections.findIndex(s => s.id === 'stocks');
+                    if (stocksIndex !== -1) {
+                        this.currentData.sections.splice(stocksIndex, 1,
+                            this.DEFAULT_DATA.sections.find(s => s.id === 'us-stocks'),
+                            this.DEFAULT_DATA.sections.find(s => s.id === 'jp-stocks')
+                        );
+                        // Convert old indices to Vantage (quick migration for existing data too)
+                        const indicesSection = this.currentData.sections.find(s => s.id === 'indices');
+                        if (indicesSection) {
+                            indicesSection.charts = this.DEFAULT_DATA.sections.find(s => s.id === 'indices').charts;
+                        }
+                        this.save(this.currentData);
+                    }
 
                     // Respect local theme setting over cloud sync if available
                     if (savedTheme) {
