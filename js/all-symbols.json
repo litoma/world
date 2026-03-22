@@ -156523,5 +156523,15 @@
     "symbol": "VANTAGE:ZECUSD",
     "description": "Zcash",
     "type": "spot"
+  },
+  {
+    "symbol": "VANTAGE:NIKKEI225",
+    "description": "日経平均",
+    "type": "index"
+  },
+  {
+    "symbol": "VANTAGE:DJ30",
+    "description": "ダウ平均",
+    "type": "index"
   }
 ]

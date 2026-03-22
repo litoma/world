@@ -8,8 +8,8 @@ window.StorageManager = {
                 id: "indices",
                 label: "Indices",
                 charts: [
-                    { id: "chart-001", symbol: "VANTAGE:JP225", label: "日経平均" },
-                    { id: "chart-002", symbol: "VANTAGE:US30", label: "ダウ平均" },
+                    { id: "chart-001", symbol: "VANTAGE:NIKKEI225", label: "日経平均" },
+                    { id: "chart-002", symbol: "VANTAGE:DJ30", label: "ダウ平均" },
                     { id: "chart-003", symbol: "VANTAGE:NAS100", label: "ナスダック" },
                     { id: "chart-004", symbol: "VANTAGE:SP500", label: "S&P500" }
                 ]

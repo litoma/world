@@ -217,8 +217,8 @@ window.App = {
 
         // Curated fallback list (used until tvc-symbols.json loads)
         const FALLBACK_SYMBOLS = [
-            { symbol: 'VANTAGE:JP225', description: '日経平均' },
-            { symbol: 'VANTAGE:US30', description: 'ダウ平均' },
+            { symbol: 'VANTAGE:NIKKEI225', description: '日経平均' },
+            { symbol: 'VANTAGE:DJ30', description: 'ダウ平均' },
             { symbol: 'VANTAGE:NAS100', description: 'ナスダック' },
             { symbol: 'VANTAGE:SP500', description: 'S&P500' },
             { symbol: 'TVC:GOLD', description: 'ゴールド' },
