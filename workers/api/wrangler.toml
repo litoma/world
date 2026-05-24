@@ -1,0 +1,16 @@
+name = "world"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "MARKET_KV"
+id = "d072467d05384f2dbc66fad8cd7dd6c3"
+
+[[d1_databases]]
+binding = "LAYOUT_DB"
+database_name = "world"
+database_id = "9eccfb31-71b9-4ba3-8df6-3b2ac567c06a"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
