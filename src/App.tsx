@@ -3,7 +3,7 @@ import { initAuth, login, logout } from './firebase/auth';
 import { User } from 'firebase/auth';
 import { MiniChart } from './components/MiniChart';
 import { SettingsPanel } from './components/SettingsPanel';
-import { SYMBOLS, CATEGORY_LABELS, Category } from './symbols';
+import { SYMBOLS, Category } from './symbols';
 import './index.css';
 
 interface Quote {
@@ -35,13 +35,14 @@ interface LayoutConfig {
   gridColumns: number;
 }
 
-const CATEGORY_EMOJIS: Record<Category, string> = {
-  fx: '💱',
-  index: '📈',
-  bond: '🏦',
-  commodity: '🪙',
-  crypto: '🪙',
-  other: '📊'
+
+const CATEGORY_COLORS: Record<Category, string> = {
+  fx: '#2196f3',        // 青色
+  index: '#9c27b0',     // 紫色
+  bond: '#00bcd4',      // 水色
+  commodity: '#ffd600', // 黄色
+  crypto: '#00bcd4',    // 水色
+  other: '#9e9e9e'      // 灰色
 };
 
 const DEFAULT_ENABLED_SYMBOLS = SYMBOLS.filter(s => s.defaultOn).map(s => s.id);
@@ -170,8 +171,6 @@ function App() {
     saveLayout(enabledSymbols, newCols);
   };
 
-  // Group enabled symbols by category
-  const categories = Object.keys(CATEGORY_LABELS) as Category[];
 
   return (
     <div>
@@ -208,86 +207,70 @@ function App() {
         </div>
       </header>
 
-      <main style={{ padding: '2rem', maxWidth: '1600px', margin: '0 auto' }}>
+      <main style={{ padding: '1rem', width: '100%', maxWidth: 'none', boxSizing: 'border-box' }}>
         {loading && <p style={{ color: 'var(--text-secondary)' }}>データをロード中...</p>}
         {error && <p style={{ color: '#ef5350' }}>エラー: {error}</p>}
 
         {!loading && !error && marketData && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-            {categories.map(category => {
-              const categorySymbols = SYMBOLS.filter(
-                s => s.category === category && enabledSymbols.includes(s.id)
-              );
-              if (categorySymbols.length === 0) return null;
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(auto-fill, minmax(calc(100% / ${gridColumns} - 1.5rem), 1fr))`,
+            gap: '1.5rem',
+            width: '100%'
+          }}>
+            {SYMBOLS.filter(s => enabledSymbols.includes(s.id)).map(symbolDef => {
+              const quote = marketData.snapshot.quotes[symbolDef.id];
+              const history = marketData.history.series[symbolDef.id] || [];
+
+              if (!quote) return null;
+
+              const isUp = quote.change >= 0;
+              const priceColor = isUp ? '#26a69a' : '#ef5350';
+              const decimalPlaces = symbolDef.category === 'fx' ? 3 : symbolDef.category === 'bond' ? 3 : 2;
+              const themeColor = CATEGORY_COLORS[symbolDef.category] || '#9e9e9e';
 
               return (
-                <section key={category} className="dashboard-section">
-                  <div className="section-header" style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                    <h2 style={{ fontSize: '1.3rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-                      <span>{CATEGORY_EMOJIS[category]}</span>
-                      <span>{CATEGORY_LABELS[category]}</span>
-                    </h2>
+                <div key={symbolDef.id} className="chart-card" style={{ padding: '1.25rem', minHeight: '220px', borderColor: themeColor }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.25rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontWeight: 600, fontSize: '1.05rem' }}>{symbolDef.label}</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>{symbolDef.id}</span>
+                    </div>
                   </div>
 
-                  <div style={{
-                    display: 'grid',
-                    // Responsive grid columns template driven by state, fallback to 1 column on small screens
-                    gridTemplateColumns: `repeat(auto-fill, minmax(calc(100% / ${gridColumns} - 1.5rem), 1fr))`,
-                    gap: '1.5rem'
-                  }}>
-                    {categorySymbols.map(symbolDef => {
-                      const quote = marketData.snapshot.quotes[symbolDef.id];
-                      const history = marketData.history.series[symbolDef.id] || [];
-
-                      if (!quote) return null;
-
-                      const isUp = quote.change >= 0;
-                      const priceColor = isUp ? '#26a69a' : '#ef5350';
-                      const decimalPlaces = symbolDef.category === 'fx' ? 3 : symbolDef.category === 'bond' ? 3 : 2;
-
-                      return (
-                        <div key={symbolDef.id} className="chart-card" style={{ padding: '1.25rem', minHeight: '220px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ fontWeight: 600, fontSize: '1.05rem' }}>{symbolDef.label}</span>
-                              <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>{symbolDef.id}</span>
-                            </div>
-                            <span style={{
-                              color: priceColor,
-                              fontWeight: 600,
-                              fontSize: '0.85rem',
-                              backgroundColor: isUp ? 'rgba(38, 166, 154, 0.08)' : 'rgba(239, 83, 80, 0.08)',
-                              padding: '2px 8px',
-                              borderRadius: '4px'
-                            }}>
-                              {isUp ? '+' : ''}{quote.changePct.toFixed(2)}%
-                            </span>
-                          </div>
-
-                          {/* Chart Container */}
-                          <div style={{ height: '90px', width: '100%', marginBottom: '0.75rem', backgroundColor: 'rgba(0,0,0,0.15)', borderRadius: '4px', overflow: 'hidden' }}>
-                            {history.length > 1 ? (
-                              <MiniChart data={history} change={quote.change} />
-                            ) : (
-                              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--text-secondary)', fontSize: '0.78rem' }}>
-                                十分な履歴データがありません (蓄積中)
-                              </div>
-                            )}
-                          </div>
-
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 'auto' }}>
-                            <span style={{ fontSize: '1.7rem', fontWeight: 'bold', letterSpacing: '-0.5px' }}>
-                              {quote.price.toFixed(decimalPlaces)}
-                            </span>
-                            <span style={{ color: priceColor, fontSize: '0.85rem', fontWeight: 500 }}>
-                              {isUp ? '+' : ''}{quote.change.toFixed(decimalPlaces)}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}>
+                    <span style={{
+                      color: priceColor,
+                      fontWeight: 700,
+                      fontSize: '1.2rem',
+                      backgroundColor: isUp ? 'rgba(38, 166, 154, 0.08)' : 'rgba(239, 83, 80, 0.08)',
+                      padding: '2px 10px',
+                      borderRadius: '4px'
+                    }}>
+                      {isUp ? '+' : ''}{quote.changePct.toFixed(2)}%
+                    </span>
                   </div>
-                </section>
+
+                  {/* Chart Container */}
+                  <div style={{ height: '90px', width: '100%', marginBottom: '0.75rem', backgroundColor: 'rgba(0,0,0,0.15)', borderRadius: '4px', overflow: 'hidden' }}>
+                    {history.length > 1 ? (
+                      <MiniChart data={history} change={quote.change} />
+                    ) : (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--text-secondary)', fontSize: '0.78rem' }}>
+                        十分な履歴データがありません (蓄積中)
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 'auto' }}>
+                    <span style={{ fontSize: '1.7rem', fontWeight: 'bold', letterSpacing: '-0.5px' }}>
+                      {quote.price.toFixed(decimalPlaces)}
+                    </span>
+                    <span style={{ color: priceColor, fontSize: '1rem', fontWeight: 600 }}>
+                      {isUp ? '+' : ''}{quote.change.toFixed(decimalPlaces)}
+                    </span>
+                  </div>
+                </div>
               );
             })}
           </div>

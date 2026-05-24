@@ -27,6 +27,7 @@ export const MiniChart: React.FC<MiniChartProps> = ({ data, theme = 'dark', chan
       layout: {
         background: { color: 'transparent' },
         textColor: theme === 'dark' ? '#a0a0a0' : '#555555',
+        attributionLogo: false,
       },
       grid: {
         vertLines: { visible: false },
