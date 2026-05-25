@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { initAuth, login, logout } from './firebase/auth';
 import { User } from 'firebase/auth';
 import { MiniChart } from './components/MiniChart';
-import { SettingsPanel } from './components/SettingsPanel';
 import { SYMBOLS, Category } from './symbols';
 import './index.css';
 
@@ -57,8 +56,23 @@ function App() {
   // Layout state
   const [enabledSymbols, setEnabledSymbols] = useState<string[]>(DEFAULT_ENABLED_SYMBOLS);
   const [gridColumns, setGridColumns] = useState<number>(4);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [currentView, setCurrentView] = useState<string>('home');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // Initialize theme
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
+    const initialTheme = savedTheme || 'dark';
+    setTheme(initialTheme);
+    document.body.setAttribute('data-theme', initialTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    document.body.setAttribute('data-theme', nextTheme);
+  };
 
   // Hash routing
   useEffect(() => {
@@ -184,44 +198,13 @@ function App() {
 
   return (
     <div>
-      <header style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-          <h1 style={{ cursor: 'pointer', margin: 0, fontSize: '1.5rem' }} onClick={() => window.location.hash = '#/'}>
-            Global Market Dashboard
-          </h1>
-          <div className="header-controls">
-            <button 
-              onClick={() => setIsSettingsOpen(true)}
-              style={{
-                backgroundColor: 'transparent',
-                border: '1px solid var(--border)',
-                borderRadius: '4px',
-                color: 'var(--text-primary)',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                fontWeight: 500
-              }}
-            >
-              <span>⚙</span> 設定
-            </button>
-            <div id="auth-container">
-              {!user ? (
-                <button id="login-button" onClick={login}>ログイン</button>
-              ) : (
-                <div id="user-profile">
-                  <span id="user-email">{user.email || user.displayName || 'User'}</span>
-                  <button id="logout-button" onClick={logout}>ログアウト</button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <h1 style={{ cursor: 'pointer', margin: 0, fontSize: '1.5rem', whiteSpace: 'nowrap' }} onClick={() => window.location.hash = '#/'}>
+          Global Market Dashboard
+        </h1>
 
         {/* Navigation center */}
-        <nav style={{ display: 'flex', gap: '1.5rem', alignSelf: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <nav style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           {[
             { key: 'home',      label: 'HOME',      color: '#ffffff' },
             { key: 'fx',        label: 'FOREX',     color: '#2196f3' },
@@ -237,13 +220,14 @@ function App() {
                 key={item.key}
                 href={`#/${item.key === 'home' ? '' : item.key}`}
                 style={{
-                  color: isActive ? item.color : 'var(--text-secondary)',
+                  color: item.color,
+                  opacity: isActive ? 1 : 0.6,
                   textDecoration: 'none',
                   fontWeight: isActive ? 700 : 500,
-                  fontSize: '1rem',
+                  fontSize: '0.95rem',
                   padding: '0.25rem 0.5rem',
-                  borderBottom: isActive ? `2px solid ${item.color}` : 'none',
-                  transition: 'color 0.2s, border-bottom 0.2s'
+                  borderBottom: isActive ? `2px solid ${item.color}` : '2px solid transparent',
+                  transition: 'opacity 0.2s, border-bottom 0.2s'
                 }}
               >
                 {item.label}
@@ -251,6 +235,34 @@ function App() {
             );
           })}
         </nav>
+
+        <div className="header-controls">
+          <button 
+            onClick={toggleTheme}
+            style={{
+              backgroundColor: 'transparent',
+              border: '1px solid var(--border)',
+              borderRadius: '4px',
+              color: 'var(--text-primary)',
+              padding: '0.5rem 1rem',
+              cursor: 'pointer',
+              fontWeight: 500,
+              fontSize: '0.95rem'
+            }}
+          >
+            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+          </button>
+          <div id="auth-container">
+            {!user ? (
+              <button id="login-button" onClick={login}>ログイン</button>
+            ) : (
+              <div id="user-profile">
+                <span id="user-email">{user.email || user.displayName || 'User'}</span>
+                <button id="logout-button" onClick={logout}>ログアウト</button>
+              </div>
+            )}
+          </div>
+        </div>
       </header>
 
       <main style={{ padding: '1rem', width: '100%', maxWidth: 'none', boxSizing: 'border-box' }}>
@@ -298,19 +310,21 @@ function App() {
                       }}
                       style={{
                         background: 'transparent',
-                        border: `1px solid ${isAdded ? 'var(--border)' : themeColor}`,
+                        border: '1px solid #ffffff',
                         borderRadius: '4px',
-                        color: isAdded ? 'var(--text-secondary)' : themeColor,
-                        padding: '2px 6px',
-                        fontSize: '0.75rem',
+                        color: '#ffffff',
+                        padding: 0,
+                        fontSize: '0.9rem',
                         cursor: 'pointer',
-                        fontWeight: 600,
+                        fontWeight: 'bold',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '2px'
+                        justifyContent: 'center',
+                        width: '24px',
+                        height: '24px'
                       }}
                     >
-                      {isAdded ? '➖ HOME' : '➕ HOME'}
+                      {isAdded ? '－' : '＋'}
                     </button>
                   </div>
 
@@ -330,7 +344,7 @@ function App() {
                   {/* Chart Container */}
                   <div style={{ height: '90px', width: '100%', marginBottom: '0.75rem', backgroundColor: 'rgba(0,0,0,0.15)', borderRadius: '4px', overflow: 'hidden' }}>
                     {history.length > 1 ? (
-                      <MiniChart data={history} change={quote.change} />
+                      <MiniChart data={history} change={quote.change} theme={theme} />
                     ) : (
                       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--text-secondary)', fontSize: '0.78rem' }}>
                         十分な履歴データがありません (蓄積中)
@@ -353,13 +367,42 @@ function App() {
         )}
       </main>
 
-      {/* Settings Sliding Panel */}
-      <SettingsPanel
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        gridColumns={gridColumns}
-        onChangeGridColumns={handleChangeGridColumns}
-      />
+      {/* Footer */}
+      <footer style={{
+        padding: '2rem 1rem',
+        borderTop: '1px solid var(--border)',
+        backgroundColor: 'var(--bg-secondary)',
+        textAlign: 'center',
+        marginTop: '3rem',
+        width: '100%',
+        boxSizing: 'border-box'
+      }}>
+        {/* Grid column selection buttons */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+          {[4, 6, 8, 10].map(cols => (
+            <button
+              key={cols}
+              onClick={() => handleChangeGridColumns(cols)}
+              style={{
+                padding: '0.4rem 0.8rem',
+                backgroundColor: gridColumns === cols ? 'var(--accent)' : 'transparent',
+                border: '1px solid var(--border)',
+                borderRadius: '4px',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: 600,
+                transition: 'background-color 0.2s'
+              }}
+            >
+              {cols}列
+            </button>
+          ))}
+        </div>
+        <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+          © 2026 <a href="https://x.com/litoma" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 500 }}>yusukesakai.com</a>
+        </div>
+      </footer>
     </div>
   );
 }
