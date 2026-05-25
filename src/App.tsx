@@ -36,12 +36,12 @@ interface LayoutConfig {
 
 
 const CATEGORY_COLORS: Record<Category, string> = {
-  fx: '#2196f3',        // 青色
-  index: '#9c27b0',     // 紫色
-  bond: '#00bcd4',      // 水色
-  commodity: '#ffd600', // 黄色
-  crypto: '#00bcd4',    // 水色
-  other: '#9e9e9e'      // 灰色
+  fx: '#29b6f6',        // 明るい青色
+  index: '#e040fb',     // 鮮やかなネオンパープル
+  bond: '#00e5ff',      // 非常に明るいシアン/水色
+  commodity: '#ffd600', // 鮮やかなイエロー
+  crypto: '#1de9b6',    // 鮮やかなミント/ターコイズグリーン (BONDの水色と区別)
+  other: '#b0bec5'      // 明るめの灰色
 };
 
 const DEFAULT_ENABLED_SYMBOLS = SYMBOLS.filter(s => s.defaultOn).map(s => s.id);
@@ -197,7 +197,7 @@ function App() {
 
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 style={{ cursor: 'pointer', margin: 0, fontSize: '1.5rem', whiteSpace: 'nowrap' }} onClick={() => window.location.hash = '#/'}>
           Global Market Dashboard
@@ -207,12 +207,12 @@ function App() {
         <nav style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           {[
             { key: 'home',      label: 'HOME',      color: '#ffffff' },
-            { key: 'fx',        label: 'FOREX',     color: '#2196f3' },
-            { key: 'index',     label: 'INDEX',     color: '#9c27b0' },
-            { key: 'bond',      label: 'BOND',      color: '#00bcd4' },
+            { key: 'fx',        label: 'FOREX',     color: '#29b6f6' },
+            { key: 'index',     label: 'INDEX',     color: '#e040fb' },
+            { key: 'bond',      label: 'BOND',      color: '#00e5ff' },
             { key: 'commodity', label: 'COMMODITY', color: '#ffd600' },
-            { key: 'crypto',    label: 'CRYPTO',    color: '#00bcd4' },
-            { key: 'other',     label: 'OTHER',     color: '#9e9e9e' }
+            { key: 'crypto',    label: 'CRYPTO',    color: '#1de9b6' },
+            { key: 'other',     label: 'OTHER',     color: '#b0bec5' }
           ].map(item => {
             const isActive = currentView === item.key;
             return (
@@ -236,7 +236,33 @@ function App() {
           })}
         </nav>
 
-        <div className="header-controls">
+        <div className="header-controls" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* COL select dropdown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>COL</span>
+            <select
+              value={gridColumns}
+              onChange={(e) => handleChangeGridColumns(Number(e.target.value))}
+              style={{
+                backgroundColor: 'transparent',
+                border: '1px solid var(--border)',
+                borderRadius: '4px',
+                color: 'var(--text-primary)',
+                padding: '0.4rem 0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                outline: 'none'
+              }}
+            >
+              {[4, 6, 8, 10].map(cols => (
+                <option key={cols} value={cols} style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' }}>
+                  {cols}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <button 
             onClick={toggleTheme}
             style={{
@@ -244,10 +270,10 @@ function App() {
               border: '1px solid var(--border)',
               borderRadius: '4px',
               color: 'var(--text-primary)',
-              padding: '0.5rem 1rem',
+              padding: '0.45rem 0.8rem',
               cursor: 'pointer',
               fontWeight: 500,
-              fontSize: '0.95rem'
+              fontSize: '0.85rem'
             }}
           >
             {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
@@ -265,7 +291,7 @@ function App() {
         </div>
       </header>
 
-      <main style={{ padding: '1rem', width: '100%', maxWidth: 'none', boxSizing: 'border-box' }}>
+      <main style={{ padding: '1rem', width: '100%', maxWidth: 'none', boxSizing: 'border-box', flex: 1 }}>
         {loading && <p style={{ color: 'var(--text-secondary)' }}>データをロード中...</p>}
         {error && <p style={{ color: '#ef5350' }}>エラー: {error}</p>}
 
@@ -332,10 +358,7 @@ function App() {
                     <span style={{
                       color: priceColor,
                       fontWeight: 700,
-                      fontSize: '1.7rem',
-                      backgroundColor: isUp ? 'rgba(38, 166, 154, 0.08)' : 'rgba(239, 83, 80, 0.08)',
-                      padding: '2px 10px',
-                      borderRadius: '4px'
+                      fontSize: '1.7rem'
                     }}>
                       {isUp ? '+' : ''}{quote.changePct.toFixed(2)}%
                     </span>
@@ -371,34 +394,12 @@ function App() {
       <footer style={{
         padding: '2rem 1rem',
         borderTop: '1px solid var(--border)',
-        backgroundColor: 'var(--bg-secondary)',
+        backgroundColor: 'transparent',
         textAlign: 'center',
-        marginTop: '3rem',
+        marginTop: 'auto',
         width: '100%',
         boxSizing: 'border-box'
       }}>
-        {/* Grid column selection buttons */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-          {[4, 6, 8, 10].map(cols => (
-            <button
-              key={cols}
-              onClick={() => handleChangeGridColumns(cols)}
-              style={{
-                padding: '0.4rem 0.8rem',
-                backgroundColor: gridColumns === cols ? 'var(--accent)' : 'transparent',
-                border: '1px solid var(--border)',
-                borderRadius: '4px',
-                color: 'var(--text-primary)',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                transition: 'background-color 0.2s'
-              }}
-            >
-              {cols}列
-            </button>
-          ))}
-        </div>
         <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
           © 2026 <a href="https://x.com/litoma" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 500 }}>yusukesakai.com</a>
         </div>
