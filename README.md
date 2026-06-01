@@ -11,7 +11,7 @@
 - **フロントエンド**: Cloudflare Pages (React + Vite + TypeScript + TradingView Lightweight Charts)
 - **バックエンド**: Cloudflare Workers (`world` - API & Cron収集の一本化)
 - **データストレージ**: 
-  - **Workers KV**: 最新価格（スナップショット）と24時間の時系列データ（ヒストリ）を保持
+  - **Workers KV**: 最新価格（スナップショット）と24時間の時系列データ（ヒストリ）を統合した `market:data` として一括保持（書き込み制限対策のため統合）
   - **Cloudflare D1**: ユーザーごとのレイアウト表示設定をリレーショナルに保存
 
 ### システム構成図
@@ -38,8 +38,8 @@
             │ KV (get/put)                  │ D1 (query)
 ┌───────────▼──────────┐        ┌──────────▼──────────────────┐
 │  Workers KV           │        │  Cloudflare D1              │
-│  `market:snapshot`    │        │  `layout` テーブル           │
-│  `market:history`     │        │  （ユーザー別表示設定）      │
+│  `market:data`        │        │  `layout` テーブル           │
+│  (統合データ)         │        │  （ユーザー別表示設定）      │
 └───────────▲──────────┘        └─────────────────────────────┘
             │ KV.put
             └─────────────────────────┐ (Yahoo Finance / Finnhub)

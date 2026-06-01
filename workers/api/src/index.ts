@@ -66,11 +66,37 @@ export default {
     // GET /api/snapshot
     if (url.pathname === '/api/snapshot' && request.method === 'GET') {
       try {
-        const snapshotStr = await env.MARKET_KV.get('market:snapshot');
-        const historyStr = await env.MARKET_KV.get('market:history');
+        const marketDataStr = await env.MARKET_KV.get('market:data');
+        let snapshot = { fetchedAt: 0, quotes: {} };
+        let history = { updatedAt: 0, series: {} };
 
-        const snapshot = snapshotStr ? JSON.parse(snapshotStr) : { fetchedAt: 0, quotes: {} };
-        const history = historyStr ? JSON.parse(historyStr) : { updatedAt: 0, series: {} };
+        if (marketDataStr) {
+          const marketData = JSON.parse(marketDataStr);
+          if (marketData.snapshot) snapshot = marketData.snapshot;
+          if (marketData.history) history = marketData.history;
+        } else {
+          // Migration/fallback logic: If market:data is not found, fetch from old keys
+          const snapshotStr = await env.MARKET_KV.get('market:snapshot');
+          const historyStr = await env.MARKET_KV.get('market:history');
+          if (snapshotStr) {
+            try {
+              snapshot = JSON.parse(snapshotStr);
+            } catch (e) {
+              console.warn('Failed to parse fallback snapshot.');
+            }
+          }
+          if (historyStr) {
+            try {
+              history = JSON.parse(historyStr);
+            } catch (e) {
+              console.warn('Failed to parse fallback history.');
+            }
+          }
+          // Immediately save to market:data so subsequent requests don't need to read old keys
+          if (snapshotStr || historyStr) {
+            await env.MARKET_KV.put('market:data', JSON.stringify({ snapshot, history }));
+          }
+        }
 
         return corsResponse({
           snapshot,
@@ -259,17 +285,40 @@ async function fetchAndSave(env: Env) {
     }
   }
 
-  // 3. Read and Update KV Snapshot
-  const snapshotStr = await env.MARKET_KV.get('market:snapshot');
+  // 3. Read and Update KV Data (Merge snapshot and history into market:data)
   let snapshot: Snapshot = { fetchedAt: nowInSec, quotes: {} };
-  if (snapshotStr) {
+  let history: History = { updatedAt: nowInSec, series: {} };
+
+  const marketDataStr = await env.MARKET_KV.get('market:data');
+  if (marketDataStr) {
     try {
-      snapshot = JSON.parse(snapshotStr);
+      const marketData = JSON.parse(marketDataStr);
+      if (marketData.snapshot) snapshot = marketData.snapshot;
+      if (marketData.history) history = marketData.history;
     } catch (e) {
-      console.warn('Failed to parse existing snapshot. Starting fresh.');
+      console.warn('Failed to parse market:data. Starting fresh.');
+    }
+  } else {
+    // Migration fallback from old keys
+    const snapshotStr = await env.MARKET_KV.get('market:snapshot');
+    if (snapshotStr) {
+      try {
+        snapshot = JSON.parse(snapshotStr);
+      } catch (e) {
+        console.warn('Failed to parse fallback snapshot.');
+      }
+    }
+    const historyStr = await env.MARKET_KV.get('market:history');
+    if (historyStr) {
+      try {
+        history = JSON.parse(historyStr);
+      } catch (e) {
+        console.warn('Failed to parse fallback history.');
+      }
     }
   }
 
+  // Update snapshot
   snapshot.fetchedAt = nowInSec;
   for (const [symbolId, quote] of Object.entries(fetchedQuotes)) {
     snapshot.quotes[symbolId] = {
@@ -278,20 +327,7 @@ async function fetchAndSave(env: Env) {
     };
   }
 
-  await env.MARKET_KV.put('market:snapshot', JSON.stringify(snapshot));
-  console.log('Saved all fetched quotes to market:snapshot');
-
-  // 4. Read, Clean, and Update KV History
-  const historyStr = await env.MARKET_KV.get('market:history');
-  let history: History = { updatedAt: nowInSec, series: {} };
-  if (historyStr) {
-    try {
-      history = JSON.parse(historyStr);
-    } catch (e) {
-      console.warn('Failed to parse existing history. Starting fresh.');
-    }
-  }
-
+  // Update history
   history.updatedAt = nowInSec;
   const cutoff = nowInSec - 86400; // 24 hours ago
 
@@ -324,8 +360,9 @@ async function fetchAndSave(env: Env) {
     history.series[symbolId] = cleanedSeries.filter(point => point.t >= cutoff);
   }
 
-  await env.MARKET_KV.put('market:history', JSON.stringify(history));
-  console.log('Saved all series to market:history');
+  // Save both snapshot and history back to market:data in a single write operation!
+  await env.MARKET_KV.put('market:data', JSON.stringify({ snapshot, history }));
+  console.log('Saved snapshot and history to market:data');
 
   return {
     updatedCount: Object.keys(fetchedQuotes).length,
