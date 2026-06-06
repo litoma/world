@@ -66,6 +66,15 @@ export default {
     // GET /api/snapshot
     if (url.pathname === '/api/snapshot' && request.method === 'GET') {
       try {
+        // 1. Check Cloudflare Cache first to avoid KV Read operations
+        const cache = caches.default;
+        const cacheKey = new Request(request.url);
+        const cachedResponse = await cache.match(cacheKey);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        // 2. Cache miss: read from KV
         const marketDataStr = await env.MARKET_KV.get('market:data');
         let snapshot = { fetchedAt: 0, quotes: {} };
         let history = { updatedAt: 0, series: {} };
@@ -98,10 +107,23 @@ export default {
           }
         }
 
-        return corsResponse({
-          snapshot,
-          history
+        // 3. Build response and store in cache for 5 minutes (300s = Cron interval)
+        const responseData = { snapshot, history };
+        const response = new Response(JSON.stringify(responseData), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Cache-Control': 'public, max-age=300', // 5 minutes
+          }
         });
+
+        // Cache a clone (Response can only be consumed once)
+        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+        return response;
       } catch (error: any) {
         return corsResponse({ error: error.message || error }, 500);
       }
@@ -363,6 +385,15 @@ async function fetchAndSave(env: Env) {
   // Save both snapshot and history back to market:data in a single write operation!
   await env.MARKET_KV.put('market:data', JSON.stringify({ snapshot, history }));
   console.log('Saved snapshot and history to market:data');
+
+  // Invalidate the cached /api/snapshot response so next request gets fresh data from KV
+  const apiUrl = 'https://world.litoma.workers.dev/api/snapshot';
+  try {
+    const deleted = await caches.default.delete(new Request(apiUrl));
+    console.log(`Cache invalidation for ${apiUrl}: ${deleted ? 'succeeded' : 'key not found (no active cache)'}`);
+  } catch (e: any) {
+    console.warn(`Cache invalidation failed (non-fatal): ${e.message || e}`);
+  }
 
   return {
     updatedCount: Object.keys(fetchedQuotes).length,
