@@ -204,7 +204,7 @@ function App() {
         </h1>
 
         {/* Navigation center */}
-        <nav style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <nav style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           {[
             { key: 'home',      label: 'HOME',      color: '#ffffff' },
             { key: 'fx',        label: 'FOREX',     color: '#29b6f6' },
@@ -221,13 +221,18 @@ function App() {
                 href={`#/${item.key === 'home' ? '' : item.key}`}
                 style={{
                   color: item.color,
-                  opacity: isActive ? 1 : 0.6,
+                  opacity: isActive ? 1 : 0.82,
                   textDecoration: 'none',
-                  fontWeight: isActive ? 700 : 500,
-                  fontSize: '0.95rem',
-                  padding: '0.25rem 0.5rem',
-                  borderBottom: isActive ? `2px solid ${item.color}` : '2px solid transparent',
-                  transition: 'opacity 0.2s, border-bottom 0.2s'
+                  fontWeight: isActive ? 700 : 600,
+                  fontSize: '0.88rem',
+                  letterSpacing: '0.04em',
+                  padding: '0.3rem 0.75rem',
+                  borderRadius: '999px',
+                  background: isActive ? `${item.color}22` : 'transparent',
+                  border: isActive ? `1px solid ${item.color}88` : '1px solid transparent',
+                  textShadow: isActive ? `0 0 12px ${item.color}cc` : 'none',
+                  boxShadow: isActive ? `0 0 8px ${item.color}44` : 'none',
+                  transition: 'all 0.2s ease'
                 }}
               >
                 {item.label}

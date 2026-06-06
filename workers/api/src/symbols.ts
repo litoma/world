@@ -19,13 +19,13 @@ export const SYMBOLS: SymbolDef[] = [
   { id: 'audusd',  label: 'AUD/USD',     category: 'fx',        source: 'yahoo',   yahooSymbol: 'AUDUSD=X',  defaultOn: false },
   { id: 'audjpy',  label: 'AUD/JPY',     category: 'fx',        source: 'yahoo',   yahooSymbol: 'AUDJPY=X',  defaultOn: false },
   { id: 'dxy',     label: 'DXY',         category: 'fx',        source: 'yahoo',   yahooSymbol: 'DX-Y.NYB',  defaultOn: true  },
-  // 米国インデックス（Finnhub）
-  { id: 'sp500',   label: 'S&P500',      category: 'index',     source: 'finnhub', finnhubSymbol: 'SPY',     defaultOn: true  },
-  { id: 'nasdaq',  label: 'NASDAQ',      category: 'index',     source: 'finnhub', finnhubSymbol: 'QQQ',     defaultOn: true  },
-  { id: 'dow',     label: 'ダウ平均',    category: 'index',     source: 'finnhub', finnhubSymbol: 'DIA',     defaultOn: true  },
+  // 米国インデックス（Yahoo Finance 指数シンボルに変更: ETFではなく指数本値）
+  { id: 'sp500',   label: 'S&P500',      category: 'index',     source: 'yahoo',   yahooSymbol: '^GSPC',     defaultOn: true  },
+  { id: 'nasdaq',  label: 'NASDAQ',      category: 'index',     source: 'yahoo',   yahooSymbol: '^IXIC',     defaultOn: true  },
+  { id: 'dow',     label: 'ダウ平均',    category: 'index',     source: 'yahoo',   yahooSymbol: '^DJI',      defaultOn: true  },
   // 国際インデックス（Yahoo Finance）
   { id: 'n225',    label: '日経225',     category: 'index',     source: 'yahoo',   yahooSymbol: '^N225',     defaultOn: true  },
-  { id: 'topix',   label: 'TOPIX(ETF)',  category: 'index',     source: 'yahoo',   yahooSymbol: '1306.T',    defaultOn: true  },
+  { id: 'topix',   label: 'TOPIX',       category: 'index',     source: 'yahoo',   yahooSymbol: '^TOPX',     defaultOn: true  },
   { id: 'ftse',    label: 'FTSE100',     category: 'index',     source: 'yahoo',   yahooSymbol: '^FTSE',     defaultOn: false },
   { id: 'dax',     label: 'DAX',         category: 'index',     source: 'yahoo',   yahooSymbol: '^GDAXI',    defaultOn: false },
   { id: 'hsi',     label: 'ハンセン',    category: 'index',     source: 'yahoo',   yahooSymbol: '^HSI',      defaultOn: false },
@@ -36,11 +36,11 @@ export const SYMBOLS: SymbolDef[] = [
   { id: 'us3m',    label: 'US3M利回',    category: 'bond',      source: 'yahoo',   yahooSymbol: '^IRX',      defaultOn: false },
   { id: 'tnote',   label: 'T-NOTE先物',  category: 'bond',      source: 'yahoo',   yahooSymbol: 'ZN=F',      defaultOn: false },
   { id: 'tbond',   label: 'T-BOND先物',  category: 'bond',      source: 'yahoo',   yahooSymbol: 'ZB=F',      defaultOn: false },
-  // コモディティ先物（Finnhub）
-  { id: 'gold',    label: 'ゴールド',    category: 'commodity', source: 'finnhub', finnhubSymbol: 'GLD',     defaultOn: true  },
-  { id: 'silver',  label: 'シルバー',    category: 'commodity', source: 'finnhub', finnhubSymbol: 'SLV',     defaultOn: false },
-  { id: 'wti',     label: 'WTI原油',     category: 'commodity', source: 'finnhub', finnhubSymbol: 'USO',     defaultOn: false },
-  { id: 'brent',   label: 'Brent原油',   category: 'commodity', source: 'finnhub', finnhubSymbol: 'BNO',     defaultOn: false },
+  // コモディティ先物（Yahoo Finance 先物シンボルに変更: ETFではなく先物本値）
+  { id: 'gold',    label: 'ゴールド',    category: 'commodity', source: 'yahoo',   yahooSymbol: 'GC=F',      defaultOn: true  },
+  { id: 'silver',  label: 'シルバー',    category: 'commodity', source: 'yahoo',   yahooSymbol: 'SI=F',      defaultOn: false },
+  { id: 'wti',     label: 'WTI原油',     category: 'commodity', source: 'yahoo',   yahooSymbol: 'CL=F',      defaultOn: false },
+  { id: 'brent',   label: 'Brent原油',   category: 'commodity', source: 'yahoo',   yahooSymbol: 'BZ=F',      defaultOn: false },
   // 仮想通貨（Yahoo Finance）
   { id: 'btc',     label: 'BTC/USD',     category: 'crypto',    source: 'yahoo',   yahooSymbol: 'BTC-USD',   defaultOn: true  },
   // その他（Yahoo Finance）
